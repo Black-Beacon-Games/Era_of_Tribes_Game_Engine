@@ -11,6 +11,7 @@ import com.eraoftribes.game.building.BuildingManager;
 import com.eraoftribes.game.unit.UnitManager;
 import com.eraoftribes.game.resource.ResourceManager;
 import com.eraoftribes.game.event.EventManager;
+import com.eraoftribes.game.scene.CreditsScene;
 import com.eraoftribes.game.scene.LoadingScene;
 import com.eraoftribes.game.scene.MainMenuScene;
 import com.eraoftribes.game.scene.SettingsScene;
@@ -64,6 +65,7 @@ public class Game {
         engine.getSceneManager().register("loading", new LoadingScene(engine, this));
         engine.getSceneManager().register("main_menu", new MainMenuScene(engine, this));
         engine.getSceneManager().register("settings", new SettingsScene(engine));
+        engine.getSceneManager().register("credits", new CreditsScene(engine));
         engine.getSceneManager().register("game", new Scene("game") {
             public void onEnter() { startGame(); }
         });

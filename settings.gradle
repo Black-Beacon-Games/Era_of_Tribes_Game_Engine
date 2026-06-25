@@ -1,1 +1,4 @@
 rootProject.name = 'EraOfTribes'
+
+gradle.ext.publisher = 'Black Beacon Games'
+gradle.ext.credits = 'Game Design by Arne Lorenz | Software Engineering & Web Development by Kilian Bogus'

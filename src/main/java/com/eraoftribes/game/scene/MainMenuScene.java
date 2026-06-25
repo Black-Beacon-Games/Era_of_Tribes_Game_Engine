@@ -9,7 +9,7 @@ public class MainMenuScene extends Scene {
     private final Engine engine;
     private final Game game;
 
-    private static final String[] LABELS = {"Play", "Settings", "Quit"};
+    private static final String[] LABELS = {"Play", "Settings", "Credits", "Quit"};
     private int selected;
 
     public MainMenuScene(Engine engine, Game game) {
@@ -70,7 +70,8 @@ public class MainMenuScene extends Scene {
         switch (selected) {
             case 0 -> engine.getSceneManager().switchTo("game");
             case 1 -> engine.getSceneManager().switchTo("settings");
-            case 2 -> System.exit(0);
+            case 2 -> engine.getSceneManager().switchTo("credits");
+            case 3 -> System.exit(0);
         }
     }
 }

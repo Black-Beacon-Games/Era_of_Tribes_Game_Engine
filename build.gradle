@@ -3,6 +3,8 @@ plugins {
     id 'application'
 }
 
+version = '1.0.0'
+
 java {
     sourceCompatibility = JavaVersion.VERSION_17
     targetCompatibility = JavaVersion.VERSION_17
@@ -46,9 +48,9 @@ tasks.named('jar') {
 
 tasks.register('dist', Copy) {
     dependsOn jar
-    from layout.buildDirectory.dir("libs/${rootProject.name}.jar")
+    from layout.buildDirectory.dir("libs/${rootProject.name}-${project.version}.jar")
     into layout.projectDirectory.dir('engine')
-    rename "${rootProject.name}.jar", 'EraEngine.jar'
+    rename "${rootProject.name}-${project.version}.jar", 'EraEngine.jar'
 }
 
 tasks.register('runGame', JavaExec) {
