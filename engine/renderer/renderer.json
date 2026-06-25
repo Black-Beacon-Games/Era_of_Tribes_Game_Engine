@@ -1,0 +1,19 @@
+{
+  "backend": "opengl",
+  "version": "3.3",
+  "shaders": {
+    "default": "shaders/default.vert",
+    "tile": "shaders/tile.frag",
+    "lighting": "shaders/lighting.frag"
+  },
+  "layers": {
+    "maxLayers": 16,
+    "defaultLayers": ["terrain", "biomes", "rivers", "roads", "buildings", "resources", "borders", "decoration", "fogOfWar", "ui", "effects"]
+  },
+  "quality": {
+    "textureFiltering": "linear",
+    "anisotropicFiltering": 8,
+    "antialiasing": 4,
+    "shadowQuality": "medium"
+  }
+}

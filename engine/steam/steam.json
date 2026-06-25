@@ -1,0 +1,24 @@
+{
+  "enabled": false,
+  "appId": 0,
+  "features": {
+    "login": true,
+    "overlay": true,
+    "achievements": true,
+    "cloudSaves": false,
+    "workshop": false,
+    "leaderboards": true,
+    "lobby": true,
+    "invitations": true
+  },
+  "achievements": [
+    { "id": "first_city",  "name": "Erste Stadt",  "description": "Gruende deine erste Stadt." },
+    { "id": "first_war",   "name": "Erster Krieg", "description": "Fuehre deinen ersten Krieg." },
+    { "id": "conqueror",   "name": "Eroberer",     "description": "Erobere 5 Staedte." },
+    { "id": "merchant",    "name": "Kaufmann",     "description": "Handle 1000 Gold." },
+    { "id": "scholar",     "name": "Gelehrter",    "description": "Erforsche alle Technologien einer Aera." },
+    { "id": "diplomat",    "name": "Diplomat",     "description": "Schliesse 10 Vertraege." },
+    { "id": "survivor",    "name": "Ueberlebender","description": "Ueberstehe 50 Runden." },
+    { "id": "winner",      "name": "Sieger",       "description": "Gewinne ein Spiel." }
+  ]
+}

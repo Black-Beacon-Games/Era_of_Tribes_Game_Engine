@@ -1,0 +1,5 @@
+Manifest-Version: 1.0
+Main-Class: com.eraoftribes.EraOfTribes
+Implementation-Title: Era of Tribes
+Implementation-Version: unspecified
+

@@ -1,0 +1,59 @@
+plugins {
+    id 'java'
+    id 'application'
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
+}
+
+application {
+    mainClass = 'com.eraoftribes.EraOfTribes'
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'com.google.code.gson:gson:2.11.0'
+    implementation 'org.slf4j:slf4j-api:2.0.16'
+    implementation 'ch.qos.logback:logback-classic:1.5.13'
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.11.3'
+}
+
+tasks.named('test') {
+    useJUnitPlatform()
+}
+
+tasks.named('jar') {
+    manifest {
+        attributes(
+            'Main-Class': 'com.eraoftribes.EraOfTribes',
+            'Implementation-Title': 'Era of Tribes',
+            'Implementation-Version': project.version
+        )
+    }
+    from {
+        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+}
+
+tasks.register('dist', Copy) {
+    dependsOn jar
+    from layout.buildDirectory.dir("libs/${rootProject.name}.jar")
+    into layout.projectDirectory.dir('engine')
+    rename "${rootProject.name}.jar", 'EraEngine.jar'
+}
+
+tasks.register('runGame', JavaExec) {
+    dependsOn dist
+    classpath = files(layout.projectDirectory.dir('engine').file('EraEngine.jar'))
+    args '--game', layout.projectDirectory.dir('game').asFile.absolutePath
+}
+
+tasks.named('build') {
+    finalizedBy dist
+}

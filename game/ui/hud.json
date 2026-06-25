@@ -1,0 +1,95 @@
+{
+  "version": "1.0",
+  "theme": "medieval",
+  "hud": {
+    "image": "hud.png",
+    "hitmap": "hud_hitmap.png",
+    "buttons": [
+      { "color": "#FF0000", "action": "open_buildings",  "label": "Gebaeude" },
+      { "color": "#0000FF", "action": "open_research",   "label": "Forschung" },
+      { "color": "#FFFF00", "action": "open_diplomacy",  "label": "Diplomatie" },
+      { "color": "#00FF00", "action": "open_trade",      "label": "Handel" },
+      { "color": "#FF00FF", "action": "open_menu",       "label": "Menue" }
+    ]
+  },
+  "components": {
+    "minimap": {
+      "position": "bottom-left",
+      "width": 200,
+      "height": 200
+    },
+    "playerPanel": {
+      "position": "top-left",
+      "width": 280,
+      "height": 160,
+      "showName": true,
+      "showResources": true,
+      "showGold": true,
+      "showPopulation": true
+    },
+    "resourceBar": {
+      "position": "top",
+      "width": 600,
+      "height": 40,
+      "resources": ["wood", "stone", "iron", "gold", "food"]
+    },
+    "eventLog": {
+      "position": "top-right",
+      "width": 320,
+      "height": 200,
+      "maxMessages": 50
+    },
+    "diplomacyPanel": {
+      "position": "right",
+      "width": 280,
+      "height": 400,
+      "showAllTribes": true
+    },
+    "chat": {
+      "position": "bottom-right",
+      "width": 320,
+      "height": 180,
+      "maxMessages": 100
+    },
+    "turnInfo": {
+      "position": "bottom-center",
+      "width": 300,
+      "height": 50,
+      "showTurn": true,
+      "showPhase": true
+    },
+    "tooltip": {
+      "delay": 400,
+      "maxWidth": 350
+    },
+    "notification": {
+      "position": "center-top",
+      "duration": 4000,
+      "maxNotifications": 5
+    },
+    "popupWindow": {
+      "width": 500,
+      "height": 300,
+      "position": "center"
+    },
+    "console": {
+      "enabled": false,
+      "keyBind": "F1"
+    }
+  },
+  "mainMenu": {
+    "image": "main_menu.png",
+    "hitmap": "main_menu_hitmap.png",
+    "buttons": [
+      { "color": "#FF0000", "action": "new_game",     "label": "Neues Spiel" },
+      { "color": "#00FF00", "action": "load_game",    "label": "Spiel laden" },
+      { "color": "#0000FF", "action": "multiplayer",  "label": "Mehrspieler" },
+      { "color": "#FFFF00", "action": "campaign",     "label": "Kampagne" },
+      { "color": "#FF8800", "action": "map_editor",   "label": "Karteneditor" },
+      { "color": "#8800FF", "action": "mods",         "label": "Mods" },
+      { "color": "#00FFFF", "action": "settings",     "label": "Einstellungen" },
+      { "color": "#FF44FF", "action": "credits",      "label": "Credits" },
+      { "color": "#444444", "action": "quit",         "label": "Beenden" }
+    ]
+  }
+}

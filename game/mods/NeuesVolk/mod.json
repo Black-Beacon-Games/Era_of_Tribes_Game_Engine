@@ -1,0 +1,17 @@
+{
+  "id": "neues_volk_mod",
+  "name": "Neues Volk - Perser",
+  "version": "1.0.0",
+  "author": "Community",
+  "description": "Fuegt das Volk der Perser mit eigenem Technologiebaum, Gebaeuden und Einheiten hinzu.",
+  "minEngineVersion": "1.0.0",
+  "type": "content",
+  "adds": {
+    "tribes": ["tribes/perser.json"],
+    "technologies": ["technologies/persian_techs.json"],
+    "buildings": ["buildings/persian_buildings.json"],
+    "units": ["units/persian_units.json"]
+  },
+  "dependencies": [],
+  "conflicts": []
+}

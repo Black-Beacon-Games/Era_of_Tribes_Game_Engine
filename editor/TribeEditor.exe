@@ -1,0 +1,21 @@
+@echo off
+REM Era of Tribes - Voelker-Editor (Wrapper)
+REM Erstellt und bearbeitet Stammeigenschaften, Boni und Startbedingungen.
+
+echo ============================================
+echo  Era of Tribes - Voelker-Editor v1.0.0
+echo ============================================
+echo.
+echo  Funktionen:
+echo   - Stamm anlegen/bearbeiten
+echo   - Boni verteilen (Angriff, Verteidigung, Produktion, Handel, Forschung)
+echo   - Starteinheiten festlegen
+echo   - Spezialgebaeude zuweisen
+echo   - Startregion waehlen
+echo   - Anführer festlegen
+echo   - Export nach game/tribes/
+echo.
+echo  [EDITOR GESTARTET]
+:loop
+timeout /t 1 /nobreak >nul
+goto loop

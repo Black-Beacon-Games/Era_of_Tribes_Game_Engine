@@ -1,0 +1,17 @@
+{
+  "clientId": 0,
+  "enabled": false,
+  "richPresence": {
+    "details": "Era of Tribes",
+    "state": "Im Menue",
+    "largeImageKey": "logo",
+    "largeImageText": "Era of Tribes v1.0",
+    "smallImageKey": "",
+    "smallImageText": "",
+    "partySize": 0,
+    "partyMax": 8
+  },
+  "buttons": [
+    { "label": "Beitreten", "url": "https://eraoftribes.com/join" }
+  ]
+}

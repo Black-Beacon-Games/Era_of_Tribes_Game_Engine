@@ -1,0 +1,31 @@
+{
+  "version": "1.0",
+  "resources": [
+    { "id": "wood",     "name": "Holz",       "type": "raw",     "icon": "wood.png",     "weight": 1, "basePrice": 3 },
+    { "id": "stone",    "name": "Stein",      "type": "raw",     "icon": "stone.png",    "weight": 2, "basePrice": 4 },
+    { "id": "clay",     "name": "Lehm",       "type": "raw",     "icon": "clay.png",     "weight": 2, "basePrice": 2 },
+    { "id": "iron",     "name": "Eisen",      "type": "raw",     "icon": "iron.png",     "weight": 3, "basePrice": 8 },
+    { "id": "copper",   "name": "Kupfer",     "type": "raw",     "icon": "copper.png",   "weight": 3, "basePrice": 6 },
+    { "id": "gold",     "name": "Gold",       "type": "precious","icon": "gold.png",     "weight": 2, "basePrice": 20 },
+    { "id": "silver",   "name": "Silber",     "type": "precious","icon": "silver.png",   "weight": 2, "basePrice": 15 },
+    { "id": "grain",    "name": "Getreide",   "type": "food",    "icon": "grain.png",    "weight": 1, "basePrice": 2 },
+    { "id": "livestock","name": "Viehzucht",  "type": "food",    "icon": "livestock.png","weight": 2, "basePrice": 4 },
+    { "id": "salt",     "name": "Salz",       "type": "luxury",  "icon": "salt.png",     "weight": 1, "basePrice": 7 },
+    { "id": "coal",     "name": "Kohle",      "type": "raw",     "icon": "coal.png",     "weight": 3, "basePrice": 10 },
+    { "id": "oil",      "name": "Oel",        "type": "raw",     "icon": "oil.png",      "weight": 2, "basePrice": 25 },
+    { "id": "spices",   "name": "Gewuerze",   "type": "luxury",  "icon": "spices.png",   "weight": 1, "basePrice": 12 },
+    { "id": "fish",     "name": "Fisch",      "type": "food",    "icon": "fish.png",     "weight": 1, "basePrice": 3 },
+    { "id": "wine",     "name": "Wein",       "type": "luxury",  "icon": "wine.png",     "weight": 1, "basePrice": 10 },
+    { "id": "wool",     "name": "Wolle",      "type": "raw",     "icon": "wool.png",     "weight": 1, "basePrice": 5 }
+  ],
+  "terrainResources": {
+    "forest":    ["wood"],
+    "mountain":  ["stone", "iron", "copper", "gold", "silver", "coal"],
+    "grassland": ["grain", "livestock", "clay"],
+    "desert":    ["salt", "oil", "spices"],
+    "water":     ["fish"],
+    "tundra":    ["wool"],
+    "swamp":     ["wood", "clay"],
+    "hills":     ["stone", "iron", "copper", "gold", "wine"]
+  }
+}

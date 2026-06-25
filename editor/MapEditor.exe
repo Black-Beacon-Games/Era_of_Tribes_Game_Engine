@@ -1,0 +1,24 @@
+@echo off
+REM Era of Tribes - Karteneditor (Wrapper)
+REM Erstellt und bearbeitet Weltkarten, Terrain, Regionen und Ressourcen.
+
+echo ============================================
+echo  Era of Tribes - Karteneditor v1.0.0
+echo ============================================
+echo.
+echo  Funktionen:
+echo   - Terrain malen (Pinsel, Fuellung, Formen)
+echo   - Color-Map automatisch erzeugen
+echo   - Regionen definieren (Grenzen zeichnen)
+echo   - Ressourcen platzieren
+echo   - Fluesse zeichnen (Quelle-Muendung)
+echo   - Strassen erstellen
+echo   - Staedte setzen
+echo   - Startpositionen festlegen
+echo   - Vorschau mit Live-Test
+echo   - Export nach game/maps/
+echo.
+echo  [EDITOR GESTARTET]
+:loop
+timeout /t 1 /nobreak >nul
+goto loop
