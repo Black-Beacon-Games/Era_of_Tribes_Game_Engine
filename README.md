@@ -458,4 +458,28 @@ Dann wieder `launcher.bat` starten.
 
 ---
 
+---
+
+## Roadmap
+
+### ✅ Erledigt
+
+- **Audio-Engine (Soundplayer)** – `AudioEngine.java` unterstützt `.wav` und `.mp3` via `javax.sound.sampled` + MP3SPI.
+  - `loadTrack(id, datei, loop, volume)` – Track registrieren
+  - `play(id)` – SFX (einmalig, Thread-Pool) oder Musik (loop, eigener Thread)
+  - `stop(id)` / `stopAll()` – Stoppen
+  - `setVolume()`, `setMusicVolume()`, `setSFXVolume()` – Lautstärkeregelung
+  - Volume-Berechnung: `clip.volume * sfx/musicVolume * masterVolume`
+
+### 🔄 Noch offen
+
+- **`SoundClip`-Cache persists after scene changes** – aktuell werden alle Tracks in einer `HashMap` gehalten. Bei Szenenwechseln sollte `clearTracks()` oder ein Szenen-Lebenszyklus für Audio eingebaut werden.
+- **`ExecutorService` für SFX** – wird bei `stopAll()` via `shutdownNow()` beendet, aber nie neu gestartet. Bei wiederholtem `stopAll()` + neuem `play()` → SFX tot. `sfxPool` sollte lazily oder per `resetSfxPool()` neu erstellt werden.
+- **Kein `SourceDataLine.flush()` vor `close()`** – beim Abbrechen von Musik kann ein hörbarer Cut-Off entstehen. Ein kurzes Fade-out fehlt.
+- **Volume-Änderung während der Wiedergabe** – `setMusicVolume()` aktualisiert die Lautstärke, aber `setVolume()` und `setSFXVolume()` haben keinen Effekt auf bereits spielende SFX, da diese in separaten Threads laufen.
+- **Audio-Ordner existiert nicht** – `game/assets/audio/` muss manuell angelegt werden.
+- **Kein Streaming für große Dateien** – der gesamte Sound wird über `AudioSystem.getAudioInputStream()` gestreamt (ok), aber es gibt keinen Preload-Puffer für nahtlose Loops.
+- **Fehlende `clearTracks()`-Methode** – zum Entladen aller Tracks (z. B. beim Szenenwechsel).
+- **Testabdeckung** – keine JUnit-Tests für die Audio-Engine vorhanden.
+
 *Black Beacon Games*

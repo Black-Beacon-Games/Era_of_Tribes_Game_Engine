@@ -25,6 +25,7 @@ dependencies {
     implementation 'org.apache.xmlgraphics:batik-transcoder:1.17'
     implementation 'net.java.dev.jna:jna:5.14.0'
     implementation 'net.java.dev.jna:jna-platform:5.14.0'
+    implementation 'com.googlecode.soundlibs:mp3spi:1.9.5.4'
     testImplementation 'org.junit.jupiter:junit-jupiter:5.11.3'
 }
 
