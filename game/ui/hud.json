@@ -3,7 +3,6 @@
   "theme": "medieval",
   "hud": {
     "image": "hud.png",
-    "hitmap": "hud_hitmap.png",
     "buttons": [
       { "color": "#FF0000", "action": "open_buildings",  "label": "Gebaeude" },
       { "color": "#0000FF", "action": "open_research",   "label": "Forschung" },
@@ -79,7 +78,6 @@
   },
   "mainMenu": {
     "image": "main_menu.png",
-    "hitmap": "main_menu_hitmap.png",
     "buttons": [
       { "color": "#FF0000", "action": "new_game",     "label": "Neues Spiel" },
       { "color": "#00FF00", "action": "load_game",    "label": "Spiel laden" },

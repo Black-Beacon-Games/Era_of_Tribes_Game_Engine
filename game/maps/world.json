@@ -15,12 +15,6 @@
     { "id": "borders",    "image": "world_borders.png",    "visible": true },
     { "id": "decoration", "image": "world_decoration.png","visible": true }
   ],
-  "hitmaps": {
-    "tiles":   "world_tiles.png",
-    "regions": "world_regions.png",
-    "resources":"world_resources.png",
-    "buildings":"world_buildings.png"
-  },
   "regions": [
     { "id": "region_1",  "name": "Germanien",  "climate": "temperate", "fertility": 0.7 },
     { "id": "region_2",  "name": "Gallien",    "climate": "temperate", "fertility": 0.8 },

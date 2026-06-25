@@ -33,7 +33,7 @@ public class DiscordManager {
     }
 
     public void init() {
-        if (!config.enabled || config.applicationId.isEmpty()) {
+        if (!config.enabled || config.clientId.isEmpty()) {
             System.out.println("[Discord] Disabled or no Application ID set.");
             return;
         }
@@ -94,7 +94,7 @@ public class DiscordManager {
     private boolean sendHandshake() {
         JsonObject hs = new JsonObject();
         hs.addProperty("v", 1);
-        hs.addProperty("client_id", config.applicationId);
+        hs.addProperty("client_id", config.clientId);
         String json = hs.toString();
         System.out.println("[Discord] Sending handshake: " + json);
         if (!sendFrame(OP_HANDSHAKE, json)) return false;

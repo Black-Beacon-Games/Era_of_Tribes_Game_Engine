@@ -2,7 +2,7 @@ package com.eraoftribes.engine.discord;
 
 public class DiscordConfig {
     public boolean enabled = true;
-    public String applicationId = "";
+    public String clientId = "";
     public String state = "In menu";
     public String details = "Playing Era of Tribes";
     public String largeImageKey = "logo";
