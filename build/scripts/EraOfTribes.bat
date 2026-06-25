@@ -70,7 +70,7 @@ echo location of your Java installation. 1>&2
 :execute
 @rem Setup the command line
 
-set CLASSPATH=%APP_HOME%\lib\EraOfTribes.jar;%APP_HOME%\lib\gson-2.11.0.jar;%APP_HOME%\lib\logback-classic-1.5.13.jar;%APP_HOME%\lib\slf4j-api-2.0.16.jar;%APP_HOME%\lib\error_prone_annotations-2.27.0.jar;%APP_HOME%\lib\logback-core-1.5.13.jar
+set CLASSPATH=%APP_HOME%\lib\EraOfTribes.jar;%APP_HOME%\lib\gson-2.11.0.jar;%APP_HOME%\lib\logback-classic-1.5.13.jar;%APP_HOME%\lib\slf4j-api-2.0.16.jar;%APP_HOME%\lib\batik-transcoder-1.17.jar;%APP_HOME%\lib\jna-platform-5.14.0.jar;%APP_HOME%\lib\jna-5.14.0.jar;%APP_HOME%\lib\error_prone_annotations-2.27.0.jar;%APP_HOME%\lib\logback-core-1.5.13.jar;%APP_HOME%\lib\batik-bridge-1.17.jar;%APP_HOME%\lib\batik-script-1.17.jar;%APP_HOME%\lib\batik-anim-1.17.jar;%APP_HOME%\lib\batik-gvt-1.17.jar;%APP_HOME%\lib\batik-svggen-1.17.jar;%APP_HOME%\lib\batik-svg-dom-1.17.jar;%APP_HOME%\lib\batik-parser-1.17.jar;%APP_HOME%\lib\batik-awt-util-1.17.jar;%APP_HOME%\lib\batik-dom-1.17.jar;%APP_HOME%\lib\batik-xml-1.17.jar;%APP_HOME%\lib\batik-css-1.17.jar;%APP_HOME%\lib\batik-util-1.17.jar;%APP_HOME%\lib\batik-ext-1.17.jar;%APP_HOME%\lib\batik-constants-1.17.jar;%APP_HOME%\lib\batik-i18n-1.17.jar;%APP_HOME%\lib\batik-shared-resources-1.17.jar;%APP_HOME%\lib\xml-apis-ext-1.3.04.jar;%APP_HOME%\lib\xmlgraphics-commons-2.9.jar;%APP_HOME%\lib\xml-apis-1.4.01.jar;%APP_HOME%\lib\commons-io-2.11.0.jar;%APP_HOME%\lib\commons-logging-1.0.4.jar
 
 
 @rem Execute EraOfTribes

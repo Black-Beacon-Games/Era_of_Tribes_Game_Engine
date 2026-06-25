@@ -20,6 +20,9 @@ dependencies {
     implementation 'com.google.code.gson:gson:2.11.0'
     implementation 'org.slf4j:slf4j-api:2.0.16'
     implementation 'ch.qos.logback:logback-classic:1.5.13'
+    implementation 'org.apache.xmlgraphics:batik-transcoder:1.17'
+    implementation 'net.java.dev.jna:jna:5.14.0'
+    implementation 'net.java.dev.jna:jna-platform:5.14.0'
     testImplementation 'org.junit.jupiter:junit-jupiter:5.11.3'
 }
 

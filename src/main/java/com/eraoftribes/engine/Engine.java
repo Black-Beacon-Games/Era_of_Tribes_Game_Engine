@@ -2,6 +2,8 @@ package com.eraoftribes.engine;
 
 import com.eraoftribes.engine.asset.AssetManager;
 import com.eraoftribes.engine.audio.AudioEngine;
+import com.eraoftribes.engine.discord.DiscordConfig;
+import com.eraoftribes.engine.discord.DiscordManager;
 import com.eraoftribes.engine.input.InputManager;
 import com.eraoftribes.engine.networking.NetworkManager;
 import com.eraoftribes.engine.rendering.Renderer;
@@ -28,6 +30,8 @@ public class Engine {
     private UIEngine ui;
     private ScriptEngine scriptEngine;
     private WorldGenerator worldGenerator;
+    private DiscordManager discord;
+    private String lastSceneId;
     private String gamePath;
 
     public Engine(String[] args) {
@@ -68,31 +72,89 @@ public class Engine {
         scriptEngine = new ScriptEngine();
         worldGenerator = new WorldGenerator();
 
+        DiscordConfig dc = new DiscordConfig();
+        try {
+            dc = new com.google.gson.Gson().fromJson(
+                new java.io.FileReader(gamePath + "/config/discord.json"), DiscordConfig.class);
+        } catch (Exception e) {
+            System.out.println("[Engine] No discord.json found, using defaults.");
+        }
+        discord = new DiscordManager(dc);
+
         System.out.println("[Engine] All systems initialized.");
     }
 
     public void start(Game game) {
         renderer.createWindow("Era of Tribes", config.renderer.resolution.width, config.renderer.resolution.height);
-        sceneManager.switchTo("loading");
+        new Thread(() -> { try { discord.init(); } catch (Exception e) { System.err.println("[Discord] Init error: " + e.getMessage()); } }, "discord-init").start();
+        try {
+            sceneManager.switchTo("loading");
+        } catch (Exception e) {
+            System.err.println("[Engine] Scene switch error: " + e.getMessage());
+            e.printStackTrace();
+        }
         gameLoop(game);
     }
 
     private void gameLoop(Game game) {
+        long lastTime = 0;
+        double nsPerTick = 1000000000.0 / 60.0;
         while (!renderer.shouldClose()) {
-            input.poll();
-            game.update(0.016);
-            sceneManager.update(0.016);
-            renderer.beginFrame();
-            sceneManager.render(renderer);
-            renderer.endFrame();
+            try {
+                long now = System.nanoTime();
+                if (now - lastTime < nsPerTick) {
+                    try { Thread.sleep(1); } catch (InterruptedException e) { Thread.currentThread().interrupt(); break; }
+                    continue;
+                }
+                lastTime = now;
+
+                input.poll();
+                game.update(0.016);
+                sceneManager.update(0.016);
+
+                String sid = sceneManager.getCurrentSceneId();
+                if (sid != null && !sid.equals(lastSceneId)) {
+                    lastSceneId = sid;
+                    updateDiscordPresence(sid);
+                }
+
+                renderer.beginFrame();
+                sceneManager.render(renderer);
+                renderer.endFrame();
+            } catch (Exception e) {
+                System.err.println("[Engine] Game loop error: " + e.getMessage());
+                e.printStackTrace();
+                break;
+            }
         }
         shutdown();
+    }
+
+    private void updateDiscordPresence(String sceneId) {
+        String details = "Playing Era of Tribes";
+        String state = switch (sceneId) {
+            case "loading" -> "Loading...";
+            case "main_menu" -> "In main menu";
+            case "settings" -> "In settings";
+            case "game" -> "In game";
+            case "lobby" -> "In lobby";
+            default -> "In " + sceneId;
+        };
+        String finalState = state;
+        new Thread(() -> {
+            try {
+                discord.updatePresence(finalState, details);
+            } catch (Exception e) {
+                System.err.println("[Discord] Presence update error: " + e.getMessage());
+            }
+        }, "discord-presence").start();
     }
 
     private void shutdown() {
         saveManager.saveAll();
         network.disconnect();
         audio.stopAll();
+        discord.shutdown();
         renderer.destroy();
         System.out.println("[Engine] Shutdown complete.");
     }
@@ -120,5 +182,6 @@ public class Engine {
     public UIEngine getUI() { return ui; }
     public ScriptEngine getScriptEngine() { return scriptEngine; }
     public WorldGenerator getWorldGenerator() { return worldGenerator; }
+    public DiscordManager getDiscord() { return discord; }
     public String getGamePath() { return gamePath; }
 }

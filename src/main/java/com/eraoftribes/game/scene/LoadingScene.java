@@ -18,8 +18,10 @@ public class LoadingScene extends Scene {
     private int step;
     private int maxSteps;
     private long lastTick;
-    private int bgTextureId;
-    private boolean bgLoaded;
+
+    private int bgTex;
+    private int logoTex;
+    private boolean assetsReady;
 
     private final List<String> quotes = new ArrayList<>();
     private String currentQuote;
@@ -52,8 +54,9 @@ public class LoadingScene extends Scene {
         this.step = 0;
         this.maxSteps = 15;
         this.lastTick = 0;
-        this.bgTextureId = 0;
-        this.bgLoaded = false;
+        this.bgTex = 0;
+        this.logoTex = 0;
+        this.assetsReady = false;
         this.currentQuote = "";
         this.quoteSwitchTime = 0;
     }
@@ -62,28 +65,25 @@ public class LoadingScene extends Scene {
         step = 0;
         lastTick = System.currentTimeMillis();
         quoteSwitchTime = System.currentTimeMillis();
-        bgLoaded = false;
-        loadBackground();
+        assetsReady = false;
+        loadAssets();
         loadQuotes();
         pickRandomQuote();
     }
 
-    private void loadBackground() {
-        File bgDir = new File("assets/loadingscreen/background");
-        if (bgDir.isDirectory()) {
-            File[] files = bgDir.listFiles((dir, name) -> {
-                String lower = name.toLowerCase();
-                return lower.endsWith(".png") || lower.endsWith(".jpg")
-                    || lower.endsWith(".jpeg") || lower.endsWith(".bmp");
-            });
-            if (files != null && files.length > 0) {
-                bgTextureId = engine.getRenderer().loadTexture(files[0].getAbsolutePath());
-                if (bgTextureId != 0) bgLoaded = true;
-            }
-        }
-        if (!bgLoaded) {
-            System.out.println("[LoadingScreen] No background image found in assets/loadingscreen/background/");
-        }
+    private void loadAssets() {
+        String base = "assets/loadingscreen/background/";
+
+        bgTex = engine.getRenderer().loadTexture(base + "background.png");
+        if (bgTex == 0) bgTex = engine.getRenderer().loadTexture(base + "background.jpg");
+
+        logoTex = engine.getRenderer().loadTexture(base + "logo.svg",
+            engine.getRenderer().getWidth() > 0 ? engine.getRenderer().getWidth() / 2 : 400,
+            120);
+
+        assetsReady = bgTex != 0;
+        System.out.println("[LoadingScreen] Assets loaded: bg=" + (bgTex != 0)
+            + " logo=" + (logoTex != 0));
     }
 
     private void loadQuotes() {
@@ -106,9 +106,7 @@ public class LoadingScene extends Scene {
                 System.err.println("[LoadingScreen] Failed to load quotes: " + e.getMessage());
             }
         }
-        if (quotes.isEmpty()) {
-            quotes.add("Building a civilization...");
-        }
+        if (quotes.isEmpty()) quotes.add("Building a civilization...");
         System.out.println("[LoadingScreen] Loaded " + quotes.size() + " quotes.");
     }
 
@@ -146,32 +144,50 @@ public class LoadingScene extends Scene {
         int w = r.getWidth();
         int h = r.getHeight();
 
-        if (bgLoaded) {
-            r.drawTextureFull(bgTextureId);
-            r.drawRect(0, 0, w, h, 0, 0, 0, 0.5f);
+        if (assetsReady) {
+            r.drawTextureFull(bgTex);
+            r.drawRect(0, 0, w, h, 0, 0, 0, 0.45f);
         } else {
-            r.drawRect(0, 0, w, h, 0.05f, 0.05f, 0.08f, 1);
+            r.drawRect(0, 0, w, h, 0.04f, 0.04f, 0.07f, 1);
         }
 
-        r.drawTextCentered("ERA OF TRIBES", w / 2, (int) (h * 0.28), 0.8f, 0.6f, 0.2f, 1, r.getTitleFont());
+        int logoW = (int) (w * 0.5f);
+        int logoH = (int) (logoW * 0.3f);
+        int logoX = (w - logoW) / 2;
+        int logoY = (int) (h * 0.12);
 
-        int barY = (int) (h * 0.5);
-        int barH = 24;
-        int barW = (int) (w * 0.55f);
+        if (logoTex != 0) {
+            r.drawTexture(logoTex, logoX, logoY, logoW, logoH);
+        } else {
+            r.drawTextCentered("ERA OF TRIBES", w / 2, (int) (h * 0.22), 0.85f, 0.65f, 0.2f, 1, r.getTitleFont());
+        }
+
+        int barY = (int) (h * 0.48);
+        int barH = 28;
+        int barW = (int) (w * 0.5f);
         int barX = (w - barW) / 2;
-
-        r.drawRect(barX, barY, barW, barH, 0.1f, 0.1f, 0.1f, 0.8f);
         int filled = (step * barW) / maxSteps;
-        r.drawRect(barX, barY, filled, barH, 0.3f, 0.5f, 0.8f, 1);
+
+        r.drawRect(barX, barY, barW, barH, 0.12f, 0.12f, 0.15f, 0.95f);
+        r.drawRect(barX + 1, barY + 1, barW - 2, barH - 2, 0.2f, 0.2f, 0.25f, 1);
+        r.drawRect(barX + 2, barY + 2, filled - 4, barH - 4, 0.28f, 0.55f, 0.9f, 1);
+
+        for (int i = 0; i < 3; i++) {
+            int shX = barX + (int) ((float) step / maxSteps * barW * 0.3f) + i * 30;
+            int shY = barY + 3;
+            r.drawRect(shX, shY, 4, barH - 6, 1, 1, 1, 0.15f);
+        }
 
         int pct = (step * 100) / maxSteps;
         r.drawTextCentered(pct + "%", w / 2, barY + barH / 2, 1, 1, 1, 1);
 
         String msg = step < MESSAGES.length ? MESSAGES[step] : "Loading...";
-        r.drawTextCentered(msg, w / 2, barY + barH + 30, 0.7f, 0.7f, 0.7f, 1, r.getSmallFont());
+        r.drawTextCentered(msg, w / 2, barY + barH + 28, 0.7f, 0.7f, 0.7f, 1, r.getSmallFont());
 
         if (currentQuote != null && !currentQuote.isEmpty()) {
-            r.drawTextCentered("\u201C" + currentQuote + "\u201D", w / 2, (int) (h * 0.7), 0.6f, 0.6f, 0.6f, 1, r.getSmallFont());
+            r.drawTextCentered("\u201C" + currentQuote + "\u201D", w / 2, (int) (h * 0.68), 0.6f, 0.6f, 0.6f, 1, r.getSmallFont());
         }
+
+        r.drawTextCentered("v1.0.0", w / 2, h - 20, 0.4f, 0.4f, 0.4f, 1, r.getSmallFont());
     }
 }

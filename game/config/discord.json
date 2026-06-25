@@ -1,0 +1,12 @@
+{
+  "enabled": true,
+  "applicationId": "1507902136049074357",
+  "state": "In menu",
+  "details": "Playing Era of Tribes",
+  "largeImageKey": "logo",
+  "largeImageText": "Era of Tribes v1.0.0",
+  "smallImageKey": "",
+  "smallImageText": "",
+  "partyMin": 1,
+  "partyMax": 5
+}

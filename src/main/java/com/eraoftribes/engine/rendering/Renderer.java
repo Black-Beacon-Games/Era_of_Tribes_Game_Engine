@@ -18,6 +18,7 @@ import java.awt.event.WindowEvent;
 import java.awt.image.BufferStrategy;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
@@ -91,6 +92,10 @@ public class Renderer {
 
         frame.setVisible(true);
         canvas.requestFocus();
+
+        while (!canvas.isDisplayable()) {
+            try { Thread.sleep(10); } catch (InterruptedException e) { Thread.currentThread().interrupt(); break; }
+        }
 
         canvas.createBufferStrategy(2);
         buffer = canvas.getBufferStrategy();
@@ -220,6 +225,15 @@ public class Renderer {
         }
     }
 
+    public void drawTextureSub(int textureId, int srcX, int srcY, int srcW, int srcH, int dstX, int dstY, int dstW, int dstH) {
+        if (this.g != null) {
+            BufferedImage img = textures.get(textureId);
+            if (img != null) {
+                this.g.drawImage(img, dstX, dstY, dstX + dstW, dstY + dstH, srcX, srcY, srcX + srcW, srcY + srcH, null);
+            }
+        }
+    }
+
     public void drawTextureFull(int textureId) {
         drawTexture(textureId, 0, 0, width, height);
     }
@@ -235,6 +249,42 @@ public class Renderer {
             }
         } catch (IOException e) {
             System.err.println("[Renderer] Failed to load texture: " + path + " - " + e.getMessage());
+        }
+        return 0;
+    }
+
+    public int loadTexture(String path, int width, int height) {
+        if (path.toLowerCase().endsWith(".svg")) {
+            return loadSvg(path, width, height);
+        }
+        return loadTexture(path);
+    }
+
+    private int loadSvg(String path, int w, int h) {
+        try (var fis = new java.io.FileInputStream(path)) {
+            var input = new org.apache.batik.transcoder.TranscoderInput(fis);
+            final BufferedImage[] result = new BufferedImage[1];
+            var transcoder = new org.apache.batik.transcoder.image.ImageTranscoder() {
+                public BufferedImage createImage(int width, int height) {
+                    return new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+                }
+                public void writeImage(BufferedImage img, org.apache.batik.transcoder.TranscoderOutput out) {
+                    result[0] = img;
+                }
+            };
+            transcoder.addTranscodingHint(
+                org.apache.batik.transcoder.SVGAbstractTranscoder.KEY_WIDTH, (float) w);
+            transcoder.addTranscodingHint(
+                org.apache.batik.transcoder.SVGAbstractTranscoder.KEY_HEIGHT, (float) h);
+            transcoder.transcode(input, null);
+            if (result[0] != null) {
+                int id = nextTexId++;
+                textures.put(id, result[0]);
+                System.out.println("[Renderer] Loaded SVG: " + path + " (" + w + "x" + h + ")");
+                return id;
+            }
+        } catch (Exception e) {
+            System.err.println("[Renderer] Failed to load SVG: " + path + " - " + e.getMessage());
         }
         return 0;
     }
