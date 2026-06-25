@@ -1,0 +1,27 @@
+{
+  "protocol": "tcp",
+  "port": 27015,
+  "maxPlayers": 8,
+  "server": {
+    "tickRate": 20,
+    "timeout": 30000,
+    "maxReconnectAttempts": 5
+  },
+  "client": {
+    "reconnectDelay": 2000,
+    "prediction": true,
+    "interpolation": true
+  },
+  "lobby": {
+    "private": false,
+    "password": "",
+    "spectator": true,
+    "hostMigration": true
+  },
+  "features": {
+    "lan": true,
+    "dedicatedServer": false,
+    "steam": true,
+    "peerToPeer": false
+  }
+}

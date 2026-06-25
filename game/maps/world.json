@@ -1,0 +1,36 @@
+{
+  "name": "Europa",
+  "version": "1.0",
+  "size": { "width": 1920, "height": 1080 },
+  "hexSize": 48,
+  "hexShape": "flat",
+  "seed": 1337,
+  "layers": [
+    { "id": "terrain",    "image": "world_terrain.png",    "visible": true },
+    { "id": "biomes",     "image": "world_biomes.png",     "visible": true },
+    { "id": "rivers",     "image": "world_rivers.png",     "visible": true },
+    { "id": "roads",      "image": "world_roads.png",      "visible": true },
+    { "id": "buildings",  "image": "world_buildings.png",  "visible": true },
+    { "id": "resources",  "image": "world_resources.png",  "visible": true },
+    { "id": "borders",    "image": "world_borders.png",    "visible": true },
+    { "id": "decoration", "image": "world_decoration.png","visible": true }
+  ],
+  "hitmaps": {
+    "tiles":   "world_tiles.png",
+    "regions": "world_regions.png",
+    "resources":"world_resources.png",
+    "buildings":"world_buildings.png"
+  },
+  "regions": [
+    { "id": "region_1",  "name": "Germanien",  "climate": "temperate", "fertility": 0.7 },
+    { "id": "region_2",  "name": "Gallien",    "climate": "temperate", "fertility": 0.8 },
+    { "id": "region_3",  "name": "Italien",    "climate": "warm",      "fertility": 0.9 },
+    { "id": "region_4",  "name": "Britannien", "climate": "cool",      "fertility": 0.6 },
+    { "id": "region_5",  "name": "Hispanien",  "climate": "warm",      "fertility": 0.7 },
+    { "id": "region_6",  "name": "Skandinavien","climate": "cold",     "fertility": 0.3 },
+    { "id": "region_7",  "name": "Griechenland","climate": "warm",     "fertility": 0.6 },
+    { "id": "region_8",  "name": "Agypten",    "climate": "arid",      "fertility": 0.5 },
+    { "id": "region_9",  "name": "Mesopotamien","climate": "arid",     "fertility": 0.6 },
+    { "id": "region_10", "name": "Sarmatien",  "climate": "cold",      "fertility": 0.4 }
+  ]
+}

@@ -1,0 +1,11 @@
+{
+  "id": "perser",
+  "name": "Perser",
+  "description": "Ein maechtiges Wuestenvolk mit ueberlegener Reiterei und praechtigen Palastbauten.",
+  "color": "#AA44AA",
+  "bonus": { "attack": 1, "defense": 0, "production": 0, "trade": 1, "cavalry": 2 },
+  "startingRegion": "region_9",
+  "units": ["spearman", "cavalry", "catapult"],
+  "specialBuilding": "palace",
+  "leader": "Darius"
+}

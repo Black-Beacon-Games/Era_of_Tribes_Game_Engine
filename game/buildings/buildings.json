@@ -1,0 +1,33 @@
+{
+  "version": "1.0",
+  "buildings": [
+    { "id": "house",         "name": "Wohnhaus",     "cost": { "wood": 20, "stone": 10 },  "turns": 2,
+      "effects": { "population": 5, "happiness": 1 } },
+    { "id": "farm",          "name": "Bauernhof",    "cost": { "wood": 15 },               "turns": 2,
+      "effects": { "food": 3, "populationGrowth": 0.05 } },
+    { "id": "mine",          "name": "Mine",         "cost": { "wood": 30, "stone": 20 },  "turns": 4,
+      "effects": { "stone": 2, "iron": 1, "gold": 0.5 } },
+    { "id": "lumberCamp",    "name": "Holzfaellerlager","cost": { "wood": 10 },            "turns": 1,
+      "effects": { "wood": 3 } },
+    { "id": "market",        "name": "Marktplatz",   "cost": { "wood": 25, "stone": 15 },  "turns": 3,
+      "effects": { "tradeEfficiency": 0.2, "gold": 2 } },
+    { "id": "barracks",      "name": "Kaserne",      "cost": { "wood": 30, "stone": 20, "iron": 10 }, "turns": 4,
+      "effects": { "recruitmentSpeed": 0.3, "unitExperience": 1 } },
+    { "id": "harbor",        "name": "Hafen",        "cost": { "wood": 40, "stone": 30 },  "turns": 5,
+      "effects": { "tradeRoutes": 1, "navalUnits": 1 } },
+    { "id": "church",        "name": "Kirche",       "cost": { "wood": 20, "stone": 30, "gold": 10 }, "turns": 4,
+      "effects": { "faith": 2, "happiness": 2, "stability": 1 } },
+    { "id": "academy",       "name": "Akademie",     "cost": { "stone": 40, "gold": 30 },  "turns": 6,
+      "effects": { "research": 3 } },
+    { "id": "smithy",        "name": "Schmiede",     "cost": { "stone": 20, "iron": 15 },  "turns": 3,
+      "effects": { "attack": 1, "production": 1 } },
+    { "id": "wall",          "name": "Stadtmauer",    "cost": { "stone": 50, "wood": 20 },  "turns": 5,
+      "effects": { "defense": 3, "garrison": 2 } },
+    { "id": "castle",        "name": "Schloss",      "cost": { "stone": 80, "gold": 40, "iron": 20 }, "turns": 8,
+      "effects": { "defense": 5, "stability": 2, "prestige": 2 } },
+    { "id": "watchtower",    "name": "Wachturm",     "cost": { "stone": 15, "wood": 10 },  "turns": 2,
+      "effects": { "visionRange": 3, "warningTime": 1 } },
+    { "id": "dockyard",      "name": "Werft",        "cost": { "wood": 50, "stone": 25, "gold": 15 }, "turns": 5,
+      "effects": { "shipSpeed": 1, "shipAttack": 1 } }
+  ]
+}

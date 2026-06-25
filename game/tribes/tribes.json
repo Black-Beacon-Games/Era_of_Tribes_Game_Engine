@@ -1,0 +1,71 @@
+{
+  "version": "1.0",
+  "tribes": [
+    {
+      "id": "germanen",
+      "name": "Germanen",
+      "description": "Kriegerischer Stamm aus den nordischen Waeldern.",
+      "color": "#CC4400",
+      "bonus": { "attack": 1, "defense": 0, "production": 0, "trade": 0 },
+      "startingRegion": "region_1",
+      "units": ["spearman", "swordsman", "raider"],
+      "specialBuilding": "longhouse",
+      "leader": "Arminius"
+    },
+    {
+      "id": "romer",
+      "name": "Roemer",
+      "description": "Zivilisierter Stadtstaat mit ueberlegener Architektur.",
+      "color": "#CC0000",
+      "bonus": { "attack": 0, "defense": 1, "production": 1, "trade": 0 },
+      "startingRegion": "region_3",
+      "units": ["legionary", "archer", "cavalry"],
+      "specialBuilding": "forum",
+      "leader": "Caesar"
+    },
+    {
+      "id": "kelten",
+      "name": "Kelten",
+      "description": "Geheimnisvoller Stamm mit starken kulturellen Traditionen.",
+      "color": "#00AA00",
+      "bonus": { "attack": 0, "defense": 0, "production": 0, "trade": 1 },
+      "startingRegion": "region_2",
+      "units": ["spearman", "archer", "chariot"],
+      "specialBuilding": "druidCircle",
+      "leader": "Vercingetorix"
+    },
+    {
+      "id": "griechen",
+      "name": "Griechen",
+      "description": "Meister der Wissenschaft und Philosophie.",
+      "color": "#0044CC",
+      "bonus": { "attack": 0, "defense": 0, "research": 1, "trade": 1 },
+      "startingRegion": "region_7",
+      "units": ["spearman", "swordsman", "trireme"],
+      "specialBuilding": "academy",
+      "leader": "Alexander"
+    },
+    {
+      "id": "agypter",
+      "name": "Aegypter",
+      "description": "Alte Zivilisation entlang des Nils.",
+      "color": "#CCAA00",
+      "bonus": { "attack": 0, "defense": 1, "production": 1, "faith": 1 },
+      "startingRegion": "region_8",
+      "units": ["spearman", "archer", "chariot"],
+      "specialBuilding": "pyramid",
+      "leader": "Kleopatra"
+    },
+    {
+      "id": "nordmanner",
+      "name": "Nordmaenner",
+      "description": "Furchtlose Seefahrer und Entdecker.",
+      "color": "#4488CC",
+      "bonus": { "attack": 1, "defense": 0, "trade": 1, "naval": 1 },
+      "startingRegion": "region_6",
+      "units": ["berserker", "raider", "longship"],
+      "specialBuilding": "dockyard",
+      "leader": "Ragnar"
+    }
+  ]
+}

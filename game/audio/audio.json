@@ -1,0 +1,45 @@
+{
+  "version": "1.0",
+  "masterVolume": 1.0,
+  "tracks": {
+    "music": {
+      "menu":     { "file": "menu.ogg",     "loop": true,  "volume": 0.7 },
+      "game":     { "file": "game.ogg",     "loop": true,  "volume": 0.6 },
+      "combat":   { "file": "combat.ogg",   "loop": false, "volume": 0.8 },
+      "peace":    { "file": "peace.ogg",    "loop": true,  "volume": 0.5 },
+      "war":      { "file": "war.ogg",      "loop": true,  "volume": 0.7 },
+      "victory":  { "file": "victory.ogg",  "loop": false, "volume": 1.0 },
+      "defeat":   { "file": "defeat.ogg",   "loop": false, "volume": 0.8 }
+    },
+    "ambient": {
+      "day":    { "file": "day_ambient.ogg",   "loop": true, "volume": 0.4 },
+      "night":  { "file": "night_ambient.ogg", "loop": true, "volume": 0.3 },
+      "city":   { "file": "city_ambient.ogg",  "loop": true, "volume": 0.5 },
+      "nature": { "file": "nature_ambient.ogg","loop": true, "volume": 0.4 },
+      "ocean":  { "file": "ocean_ambient.ogg", "loop": true, "volume": 0.3 }
+    },
+    "sfx": {
+      "ui_click":       { "file": "click.wav",        "volume": 0.8 },
+      "ui_hover":       { "file": "hover.wav",        "volume": 0.5 },
+      "ui_confirm":     { "file": "confirm.wav",      "volume": 0.9 },
+      "ui_cancel":      { "file": "cancel.wav",       "volume": 0.7 },
+      "ui_notify":      { "file": "notify.wav",       "volume": 0.7 },
+      "unit_move":      { "file": "unit_move.wav",    "volume": 0.6 },
+      "unit_attack":    { "file": "unit_attack.wav",  "volume": 1.0 },
+      "unit_death":     { "file": "unit_death.wav",   "volume": 0.8 },
+      "building_build": { "file": "build.wav",        "volume": 0.9 },
+      "building_done":  { "file": "build_done.wav",   "volume": 1.0 },
+      "research_done":  { "file": "research.wav",     "volume": 0.9 },
+      "gold_earn":      { "file": "coin.wav",         "volume": 0.7 },
+      "gold_spend":     { "file": "spend.wav",        "volume": 0.7 },
+      "diplomacy":      { "file": "diplomacy.wav",    "volume": 0.6 },
+      "trade":          { "file": "trade.wav",        "volume": 0.6 },
+      "event_bad":      { "file": "event_bad.wav",    "volume": 0.9 },
+      "event_good":     { "file": "event_good.wav",   "volume": 0.9 },
+      "turn_start":     { "file": "turn.wav",         "volume": 0.7 },
+      "turn_end":       { "file": "turn_end.wav",     "volume": 0.7 },
+      "victory":        { "file": "victory_fanfare.wav","volume": 1.0 },
+      "defeat":         { "file": "defeat_sound.wav",  "volume": 0.8 }
+    }
+  }
+}

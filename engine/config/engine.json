@@ -1,0 +1,53 @@
+{
+  "engine": "EraEngine",
+  "version": "1.0.0",
+  "game": "Era of Tribes",
+  "renderer": {
+    "backend": "opengl",
+    "vsync": true,
+    "targetFps": 60,
+    "resolution": { "width": 1920, "height": 1080 },
+    "fullscreen": false,
+    "borderless": true,
+    "antialiasing": 4,
+    "anisotropicFiltering": 8
+  },
+  "audio": {
+    "masterVolume": 1.0,
+    "musicVolume": 0.8,
+    "sfxVolume": 1.0,
+    "ambientVolume": 0.5,
+    "voiceVolume": 1.0
+  },
+  "input": {
+    "mouseSensitivity": 1.0,
+    "scrollZoomSpeed": 1.0,
+    "edgeScroll": true,
+    "edgeScrollSpeed": 3.0,
+    "controllerSupport": false,
+    "touchSupport": false
+  },
+  "multiplayer": {
+    "maxPlayers": 8,
+    "timeout": 30000,
+    "reconnectAttempts": 5,
+    "natTraversal": true,
+    "serverTickRate": 20
+  },
+  "localization": {
+    "default": "de",
+    "fallback": "en"
+  },
+  "saves": {
+    "autosaveInterval": 180,
+    "maxSaveSlots": 30,
+    "cloudSync": false,
+    "compression": true
+  },
+  "debug": {
+    "console": false,
+    "fpsOverlay": false,
+    "logLevel": "info",
+    "profiling": false
+  }
+}

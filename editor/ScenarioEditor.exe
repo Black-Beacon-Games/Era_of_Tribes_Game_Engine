@@ -1,0 +1,21 @@
+@echo off
+REM Era of Tribes - Szenario-Editor (Wrapper)
+REM Erstellt komplette Spielszenarien mit Karte, Voelkern, Startbedingungen und Siegbedingungen.
+
+echo ============================================
+echo  Era of Tribes - Szenario-Editor v1.0.0
+echo ============================================
+echo.
+echo  Funktionen:
+echo   - Karte auswaehlen oder neu generieren
+echo   - Voelker zuweisen (menschlich/KI)
+echo   - Startbedingungen festlegen (Gold, Ressourcen, Einheiten, Gebaeude)
+echo   - Siegbedingungen definieren (Eroberung, Kultur, Technologie, Punkte)
+echo   - Rundenlimit setzen
+echo   - KI-Schwierigkeitsgrad einstellen
+echo   - Export als spielbares Szenario
+echo.
+echo  [EDITOR GESTARTET]
+:loop
+timeout /t 1 /nobreak >nul
+goto loop

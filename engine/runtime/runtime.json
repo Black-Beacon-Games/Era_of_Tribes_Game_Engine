@@ -1,0 +1,26 @@
+{
+  "version": "1.0",
+  "java": {
+    "minVersion": "17",
+    "maxMemory": "4G",
+    "initialMemory": "1G",
+    "arguments": [
+      "--enable-preview",
+      "-XX:+UseG1GC",
+      "-XX:+DisableExplicitGC",
+      "-Deraoftribes.home=../"
+    ]
+  },
+  "paths": {
+    "engine": "../engine/",
+    "game": "../game/",
+    "logs": "../logs/",
+    "cache": "../engine/cache/"
+  },
+  "environment": {
+    "devMode": false,
+    "profiling": false,
+    "hotReload": false,
+    "skipIntro": false
+  }
+}

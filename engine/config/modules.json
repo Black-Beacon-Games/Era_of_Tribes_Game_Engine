@@ -1,0 +1,19 @@
+{
+  "modules": {
+    "rendering":         { "enabled": true, "path": "renderer/", "priority": 1 },
+    "sceneManager":      { "enabled": true, "path": "renderer/", "priority": 2 },
+    "uiEngine":          { "enabled": true, "path": "renderer/", "priority": 3 },
+    "audioEngine":       { "enabled": true, "path": "runtime/",  "priority": 4 },
+    "inputManager":      { "enabled": true, "path": "runtime/",  "priority": 1 },
+    "networking":        { "enabled": true, "path": "networking/", "priority": 5 },
+    "steamIntegration":  { "enabled": true, "path": "steam/",    "priority": 6 },
+    "discordIntegration":{ "enabled": true, "path": "discord/",  "priority": 7 },
+    "saveSystem":        { "enabled": true, "path": "runtime/",  "priority": 8 },
+    "assetLoader":       { "enabled": true, "path": "runtime/",  "priority": 1 },
+    "animationSystem":   { "enabled": true, "path": "renderer/", "priority": 9 },
+    "scriptEngine":      { "enabled": true, "path": "runtime/",  "priority": 10 },
+    "pluginSystem":      { "enabled": true, "path": "runtime/",  "priority": 11 },
+    "worldGenerator":    { "enabled": true, "path": "runtime/",  "priority": 5 },
+    "aiSystem":          { "enabled": true, "path": "runtime/",  "priority": 12 }
+  }
+}
