@@ -1,0 +1,24 @@
+{
+  "project": "Era of Tribes",
+  "version": "1.0.0",
+  "engine": "EraEngine v1.0",
+  "platforms": ["windows", "linux", "macos"],
+  "steam": {
+    "enabled": false,
+    "appId": 0,
+    "build": ""
+  },
+  "optimize": true,
+  "compress": true,
+  "output": "dist/",
+  "log": "logs/build.log",
+  "modules": {
+    "rendering": true,
+    "audio": true,
+    "multiplayer": true,
+    "steam": false,
+    "discord": false,
+    "worldGenerator": true,
+    "aiSystem": true
+  }
+}
