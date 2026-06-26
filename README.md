@@ -19,52 +19,173 @@ launcher.bat        # Spiel starten
 
 ---
 
-## 📁 Projektstruktur
+## 📁 Projektstruktur (alle Dateien)
 
 ```
 Engine/
-├── engine/                  EraEngine-Kern (JAR, Konfiguration)
-├── game/                    Spielprojekt (Daten, Assets, Maps)
-│   ├── assets/              Bilder
-│   ├── audio/               Musik & Sound (.wav / .mp3)
-│   ├── buildings/           Gebäude-Daten
-│   ├── config/              discord.json
-│   ├── events/              Ereignisse
-│   ├── localization/        Übersetzungen (DE/EN)
-│   ├── maps/                Weltkarten
-│   ├── mods/                Modifikationen
-│   ├── resources/           Ressourcen
-│   ├── saves/               Spielstände
-│   ├── technologies/        Technologiebäume
-│   ├── tribes/              Völker-Definitionen
-│   ├── ui/                  HUD-Definitionen
-│   └── units/               Einheiten-Daten
-├── src/main/java/com/eraoftribes/
-│   ├── engine/              Engine-Kern
-│   │   ├── asset/           Asset-Manager (JSON, Bilder, SVGs)
-│   │   ├── audio/           Audio-Engine (.wav / .mp3)
-│   │   ├── discord/         Discord Rich Presence
-│   │   ├── input/           Eingabe-Manager
-│   │   ├── module/          Modul-System
-│   │   ├── network/         Netzwerk-Layer
-│   │   ├── rendering/       Renderer (Swing)
-│   │   ├── save/            Speicherverwaltung
-│   │   ├── scene/           Scene-Manager
-│   │   ├── script/          JS-Script-Engine
-│   │   ├── ui/              UI-Engine
-│   │   └── world/           Weltgenerator
-│   └── game/                Spiel-Logik
-│       ├── building/
-│       ├── combat/
-│       ├── diplomacy/
-│       ├── event/
-│       ├── map/
-│       ├── resource/
-│       ├── scene/           MainMenu, Settings, Credits, Loading
-│       ├── tech/
-│       └── tribe/
-├── build.gradle             Gradle-Build (Java 17)
-├── launcher.bat             Starter (Windows)
+│
+├── 📂 engine/                          # EraEngine-Kern
+│   ├── 📂 cache/
+│   │   └── .gitkeep
+│   ├── 📂 config/
+│   │   ├── engine.json
+│   │   └── modules.json
+│   ├── 📂 discord/
+│   │   └── discord.json
+│   ├── 📂 networking/
+│   │   └── networking.json
+│   ├── 📂 renderer/
+│   │   └── renderer.json
+│   ├── 📂 runtime/
+│   │   └── runtime.json
+│   ├── 📂 steam/
+│   │   └── steam.json
+│   └── EraEngine.jar
+│
+├── 📂 game/                            # Spielprojekt (Daten, Maps, Assets)
+│   ├── 📂 assets/
+│   ├── 📂 audio/
+│   │   └── audio.json
+│   ├── 📂 buildings/
+│   │   └── buildings.json
+│   ├── 📂 config/
+│   │   ├── discord.json
+│   │   └── loading_quotes.txt
+│   ├── 📂 events/
+│   │   └── events.json
+│   ├── 📂 localization/
+│   │   ├── de.json
+│   │   └── en.json
+│   ├── 📂 maps/
+│   │   ├── world.json
+│   │   ├── combat.js
+│   │   ├── diplomacy.js
+│   │   ├── events_system.js
+│   │   ├── game_logic.js
+│   │   └── world_generator.js
+│   ├── 📂 mods/
+│   │   └── 📂 NeuesVolk/
+│   │       ├── mod.json
+│   │       ├── 📂 scripts/
+│   │       │   └── perser_init.js
+│   │       └── 📂 tribes/
+│   │           └── perser.json
+│   ├── 📂 resources/
+│   │   └── resources.json
+│   ├── 📂 saves/
+│   │   └── .gitkeep
+│   ├── 📂 technologies/
+│   │   └── technologies.json
+│   ├── 📂 tribes/
+│   │   └── tribes.json
+│   ├── 📂 ui/
+│   │   └── hud.json
+│   └── 📂 units/
+│       └── units.json
+│
+├── 📂 src/
+│   ├── 📂 main/
+│   │   ├── 📂 java/com/eraoftribes/
+│   │   │   ├── EraOfTribes.java                    # Main
+│   │   │   │
+│   │   │   ├── 📂 engine/                          # Engine-Kern (13 Pakete)
+│   │   │   │   ├── Engine.java                     # Hauptklasse, Game-Loop
+│   │   │   │   ├── EngineConfig.java               # JSON-Konfiguration
+│   │   │   │   ├── ModuleManager.java              # Modul-Ladung
+│   │   │   │   │
+│   │   │   │   ├── 📂 ai/
+│   │   │   │   │   └── AISystem.java               # KI-Entscheidungen
+│   │   │   │   ├── 📂 animation/
+│   │   │   │   │   └── AnimationSystem.java        # Animationen
+│   │   │   │   ├── 📂 asset/
+│   │   │   │   │   └── AssetManager.java           # JSON / Bilder laden
+│   │   │   │   ├── 📂 audio/
+│   │   │   │   │   └── AudioEngine.java            # .wav + .mp3 Player
+│   │   │   │   ├── 📂 discord/
+│   │   │   │   │   ├── DiscordConfig.java
+│   │   │   │   │   └── DiscordManager.java         # Rich Presence
+│   │   │   │   ├── 📂 input/
+│   │   │   │   │   └── InputManager.java           # Maus / Tastatur
+│   │   │   │   ├── 📂 networking/
+│   │   │   │   │   └── NetworkManager.java         # Multiplayer
+│   │   │   │   ├── 📂 rendering/
+│   │   │   │   │   └── Renderer.java               # Swing-Renderer
+│   │   │   │   ├── 📂 save/
+│   │   │   │   │   └── SaveManager.java            # Spielstände
+│   │   │   │   ├── 📂 scene/
+│   │   │   │   │   ├── Scene.java                  # Abstract
+│   │   │   │   │   └── SceneManager.java           # Wechsel
+│   │   │   │   ├── 📂 script/
+│   │   │   │   │   └── ScriptEngine.java           # JS-Integration
+│   │   │   │   ├── 📂 ui/
+│   │   │   │   │   ├── UIComponent.java
+│   │   │   │   │   ├── UIEngine.java
+│   │   │   │   │   └── UIScreen.java
+│   │   │   │   └── 📂 world/
+│   │   │   │       └── WorldGenerator.java         # Welt-Generator
+│   │   │   │
+│   │   │   └── 📂 game/                            # Spiel-Logik (10 Pakete)
+│   │   │       ├── Game.java                       # Spiellogik + Phasen
+│   │   │       ├── GameConfig.java
+│   │   │       ├── GamePlayer.java
+│   │   │       │
+│   │   │       ├── 📂 building/
+│   │   │       │   ├── Building.java
+│   │   │       │   └── BuildingManager.java
+│   │   │       ├── 📂 combat/
+│   │   │       │   └── CombatSystem.java
+│   │   │       ├── 📂 diplomacy/
+│   │   │       │   └── DiplomacySystem.java
+│   │   │       ├── 📂 event/
+│   │   │       │   ├── EventManager.java
+│   │   │       │   └── GameEvent.java
+│   │   │       ├── 📂 map/
+│   │   │       │   └── MapManager.java
+│   │   │       ├── 📂 resource/
+│   │   │       │   ├── Resource.java
+│   │   │       │   └── ResourceManager.java
+│   │   │       ├── 📂 scene/                       # Szenen
+│   │   │       │   ├── CreditsScene.java
+│   │   │       │   ├── LoadingScene.java
+│   │   │       │   ├── MainMenuScene.java
+│   │   │       │   └── SettingsScene.java
+│   │   │       ├── 📂 tech/
+│   │   │       │   ├── TechManager.java
+│   │   │       │   └── Technology.java
+│   │   │       ├── 📂 tribe/
+│   │   │       │   ├── Tribe.java
+│   │   │       │   └── TribeManager.java
+│   │   │       └── 📂 unit/
+│   │   │           ├── Unit.java
+│   │   │           └── UnitManager.java
+│   │   │
+│   │   └── 📂 resources/
+│   │
+│   └── 📂 test/
+│       └── 📂 java/com/eraoftribes/engine/audio/
+│           └── AudioEngineTest.java                # 14 Tests
+│
+├── 📂 assets/                                      # Build-Ressourcen
+│   └── 📂 loadingscreen/
+│       ├── 📂 background/
+│       │   ├── background.png
+│       │   └── logo.svg
+│
+├── 📂 gradle/wrapper/
+│   ├── gradle-wrapper.jar
+│   └── gradle-wrapper.properties
+│
+├── 📂 logs/
+│   └── build.log
+│
+├── build.bat
+├── build.exe
+├── build.gradle                                    # Gradle-Build (Java 17)
+├── build.json
+├── gradlew.bat
+├── launcher.bat                                    # Starter Windows
+├── launcher.exe
+├── settings.gradle
 └── README.md
 ```
 
