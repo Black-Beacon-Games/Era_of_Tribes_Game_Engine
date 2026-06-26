@@ -4,7 +4,7 @@
 
 ![Java](https://img.shields.io/badge/Java-17%2B-orange?logo=java)
 ![Build](https://img.shields.io/badge/build-passing-brightgreen?logo=gradle)
-![Version](https://img.shields.io/badge/version-1.0.0-blue)
+![Version](https://img.shields.io/badge/version-0.0.3-blue)
 
 Era of Tribes ist ein **datengesteuertes Strategiespiel**: Karten, Völker, Technologien, Gebäude, Einheiten und Ereignisse werden über JSON definiert – der Java-Kern bleibt generisch und modular erweiterbar.
 
