@@ -1,486 +1,237 @@
-# Era of Tribes
+# 🌍 Era of Tribes
 
-**2D Digital Board Game – Strategy – Multiplayer – Economy – Diplomacy**
+> **2D Digital Board Game – Strategy – Multiplayer – Economy – Diplomacy**
 
-Era of Tribes ist ein datengetriebenes Strategiespiel. Karten, Völker, Technologien, Gebäude, Einheiten und Ereignisse werden über JSON definiert – der Java-Kern bleibt generisch.
+![Java](https://img.shields.io/badge/Java-17%2B-orange?logo=java)
+![Build](https://img.shields.io/badge/build-passing-brightgreen?logo=gradle)
+![Version](https://img.shields.io/badge/version-1.0.0-blue)
 
-## Projektstruktur
+Era of Tribes ist ein **datengesteuertes Strategiespiel**: Karten, Völker, Technologien, Gebäude, Einheiten und Ereignisse werden über JSON definiert – der Java-Kern bleibt generisch und modular erweiterbar.
 
-```
-engine/              EraEngine-Kern (JAR, Konfiguration)
-game/                Spielprojekt (Daten, Assets, Maps)
-├── assets/          Bilder, Audio
-├── tribes/          Völker-Definitionen
-├── technologies/    Technologiebäume
-├── buildings/       Gebäude-Daten
-├── units/           Einheiten-Daten
-├── resources/       Ressourcen
-├── events/          Ereignisse
-├── maps/            Weltkarten
-├── ui/              HUD-Definitionen
-├── localization/    Übersetzungen (DE/EN)
-├── audio/           Musik & Sound
-├── saves/           Spielstände
-└── mods/            Modifikationen
-src/                 Java-Quellcode
-├── main/java/com/eraoftribes/
-│   ├── engine/           Engine-Kern
-│   │   ├── rendering/    Renderer (Swing)
-│   │   ├── scene/        Scene-Manager
-│   │   ├── ui/           UI-Engine
-│   │   ├── asset/        Asset-Manager (JSON, Bilder, SVGs)
-│   │   ├── audio/        Audio-Engine
-│   │   ├── discord/      Discord Rich Presence
-│   │   ├── network/      Netzwerk-Layer
-│   │   ├── module/       Modul-System
-│   │   └── input/        Eingabe-Manager
-│   └── game/             Spiel-Logik
-│       └── scene/        Spiel-Szenen
-│           ├── MainMenuScene.java   Hauptmenü (Titel, Buttons)
-│           ├── SettingsScene.java   Einstellungen (Registerkarten)
-│           ├── CreditsScene.java    Credits-Anzeige
-│           └── LoadingScene.java    Ladebildschirm
-build.gradle         Gradle-Build-Datei
-launcher.bat         Starter (Windows)
-```
+---
 
-## Build & Start
+## 🚀 Quick Start
 
-### Build ausführen
-
-```
-gradlew build
-```
-
-Dieser Befehl durchläuft folgende Phasen:
-
-1. **`compileJava`** – Alle `.java`-Dateien aus `src/` werden in `.class`-Dateien unter `build/classes/java/main/` übersetzt.
-2. **`processResources`** – Ressourcen-Dateien werden kopiert (sofern vorhanden).
-3. **`classes`** – Führt compileJava + processResources zusammen.
-4. **`jar`** – Alle `.class`-Dateien + Abhängigkeiten (Gson, Logback, JNA usw.) werden in ein JAR gepackt: `build/libs/EraOfTribes-1.0.0.jar`.
-5. **`dist`** – Das JAR wird nach `engine/EraEngine.jar` kopiert (siehe `build.gradle`, Zeile 49–54).
-
-### Spiel starten
-
-```
-launcher.bat
-```
-
-Die `launcher.bat` führt folgenden Befehl aus:
-
-```
-java -jar engine/EraEngine.jar --game game/ --log logs/
-```
-
-- `--game game/` – Gibt den Pfad zum Spielverzeichnis mit JSONs und Assets an.
-- `--log logs/` – Schreibt Logs in den `logs/`-Ordner.
-
-Alternativ direkt:
-
-```
-java -jar engine/EraEngine.jar --game game/
+```bash
+gradlew build       # kompilieren + JAR packen
+launcher.bat        # Spiel starten
 ```
 
 ---
 
-## Architektur
+## 📁 Projektstruktur
 
-Datengesteuert: Die Engine stellt nur Systeme bereit (Rendering, Netzwerk, Audio, UI). Das gesamte Spiel wird durch JSON-Definitionen beschrieben – neue Inhalte oder Mods ohne Java-Code.
+```
+Engine/
+├── engine/                  EraEngine-Kern (JAR, Konfiguration)
+├── game/                    Spielprojekt (Daten, Assets, Maps)
+│   ├── assets/              Bilder
+│   ├── audio/               Musik & Sound (.wav / .mp3)
+│   ├── buildings/           Gebäude-Daten
+│   ├── config/              discord.json
+│   ├── events/              Ereignisse
+│   ├── localization/        Übersetzungen (DE/EN)
+│   ├── maps/                Weltkarten
+│   ├── mods/                Modifikationen
+│   ├── resources/           Ressourcen
+│   ├── saves/               Spielstände
+│   ├── technologies/        Technologiebäume
+│   ├── tribes/              Völker-Definitionen
+│   ├── ui/                  HUD-Definitionen
+│   └── units/               Einheiten-Daten
+├── src/main/java/com/eraoftribes/
+│   ├── engine/              Engine-Kern
+│   │   ├── asset/           Asset-Manager (JSON, Bilder, SVGs)
+│   │   ├── audio/           Audio-Engine (.wav / .mp3)
+│   │   ├── discord/         Discord Rich Presence
+│   │   ├── input/           Eingabe-Manager
+│   │   ├── module/          Modul-System
+│   │   ├── network/         Netzwerk-Layer
+│   │   ├── rendering/       Renderer (Swing)
+│   │   ├── save/            Speicherverwaltung
+│   │   ├── scene/           Scene-Manager
+│   │   ├── script/          JS-Script-Engine
+│   │   ├── ui/              UI-Engine
+│   │   └── world/           Weltgenerator
+│   └── game/                Spiel-Logik
+│       ├── building/
+│       ├── combat/
+│       ├── diplomacy/
+│       ├── event/
+│       ├── map/
+│       ├── resource/
+│       ├── scene/           MainMenu, Settings, Credits, Loading
+│       ├── tech/
+│       └── tribe/
+├── build.gradle             Gradle-Build (Java 17)
+├── launcher.bat             Starter (Windows)
+└── README.md
+```
 
-- **Rendering:** Swing (Java AWT)
-- **Netzwerk:** Eigene IPC/Steam-Lobby
-- **Discord:** Rich Presence via Named Pipe
-- **UI:** Bildbasiert (HUD-PNG + definierte Klick-Zonen)
-- **Skripte:** JavaScript-Integration geplant
+---
 
-### Szenen-System
+## 🧱 Architektur
 
-Das Spiel verwendet ein Scene-System (`com.eraoftribes.engine.scene`). Jede Szene hat `onEnter()`, `update(dt)` und `render(r)`. Der `SceneManager` wechselt zwischen Szenen per `switchTo("name")`.
+Datengesteuert: Die Engine stellt Systeme bereit, das Spiel wird durch JSON beschrieben – Mods ohne Java-Code.
 
-**Registrierte Szenen** (in `Game.java`, Zeile 64–74):
+| System | Technologie |
+|--------|-------------|
+| 🎨 **Rendering** | Swing (Java AWT) |
+| 🔊 **Audio** | `javax.sound.sampled` + MP3SPI (`.wav` / `.mp3`) |
+| 🌐 **Netzwerk** | Eigene IPC / Steam-Lobby |
+| 🎮 **Discord** | Rich Presence via Named Pipe (JNA) |
+| 🖼️ **UI** | Bildbasiert (HUD-PNG + Klick-Zonen) |
+| 📜 **Skripte** | JavaScript-Integration geplant |
 
-| Schlüssel      | Klasse            | Beschreibung                |
-|----------------|-------------------|-----------------------------|
-| `loading`      | `LoadingScene`    | Ladebildschirm mit Zitaten  |
-| `main_menu`    | `MainMenuScene`   | Hauptmenü                   |
-| `settings`     | `SettingsScene`   | Einstellungen               |
-| `credits`      | `CreditsScene`    | Credits                     |
-| `game`         | `Scene("game")`   | Hauptspiel (anonyme Klasse) |
-| `lobby`        | `Scene("lobby")`  | Lobby                       |
-| `map_editor`   | `Scene("map_editor")` | Karteneditor            |
+### 🎬 Szenen-System
 
-### Hauptmenü im Detail (`MainMenuScene.java`)
+`SceneManager` wechselt per `switchTo("name")`. Jede Szene hat `onEnter()`, `update(dt)`, `render(r)`:
 
-Die Buttons werden **nicht** aus einer JSON geladen, sondern sind direkt im Java-Code definiert:
+| Schlüssel | Klasse | Beschreibung |
+|-----------|--------|-------------|
+| `loading` | `LoadingScene` | Ladebildschirm mit Zitaten |
+| `main_menu` | `MainMenuScene` | Hauptmenü |
+| `settings` | `SettingsScene` | Einstellungen |
+| `credits` | `CreditsScene` | Credits |
+| `game` | `Scene("game")` | Hauptspiel |
+| `lobby` | `Scene("lobby")` | Lobby |
+| `map_editor` | `Scene("map_editor")` | Karteneditor |
+
+---
+
+## 📦 Abhängigkeiten
+
+| Dependency | Version | Zweck |
+|-----------|---------|-------|
+| Java | 17+ | Runtime / Kompilierung |
+| Gson | 2.11 | JSON-Parsing |
+| SLF4J + Logback | 2.0.16 / 1.5.13 | Logging |
+| JNA + JNA-Platform | 5.14 | Discord Native Pipe |
+| Batik Transcoder | 1.17 | SVG-Rendering |
+| MP3SPI | 1.9.5 | MP3-Decoding (`.mp3`) |
+| JUnit Jupiter | 5.11 | Tests |
+
+---
+
+## 🗺️ Roadmap
+
+### ✅ Abgeschlossen
+
+#### Audio-Engine (`v1.0`)
+
+| Feature | Status | Details |
+|---------|--------|---------|
+| `.wav` / `.mp3` Wiedergabe | ✅ | via `javax.sound.sampled` + MP3SPI |
+| SFX (einmalig) | ✅ | Thread-Pool, parallel spielbar |
+| Musik (Loop) | ✅ | Eigener Thread, nahtlose Loops |
+| Volume-Regelung | ✅ | Master / Music / SFX getrennt |
+| Volume live updaten | ✅ | Wirkt sofort auf aktive SFX + Musik |
+| Fade-out beim Stop | ✅ | 300ms gleitender Übergang |
+| `clearTracks()` | ✅ | Tracks entladen + Playback stoppen |
+| JUnit-Tests | ✅ | 14 Tests |
+
+<details>
+<summary><b>🔊 API-Referenz (AudioEngine)</b></summary>
 
 ```java
-// Zeile 12 – Die Button-Beschriftungen als String-Array
-private static final String[] LABELS = {"Play", "Settings", "Credits", "Quit"};
+// Track registrieren
+audio.loadTrack("id", "pfad/datei.wav", loop, volume);
+
+// Abspielen
+audio.play("id");              // SFX oder Musik (auto anhand loop-Flag)
+
+// Stoppen
+audio.stop("id");              // Einzelnen Track
+audio.stopAll();               // Alles stoppen
+
+// Lautstärke (0.0 – 1.0)
+audio.setVolume(0.8);          // Master
+audio.setMusicVolume(0.7);     // Musik
+audio.setSFXVolume(1.0);       // SFX
+
+// Szenenwechsel
+audio.clearTracks();           // Alle Tracks entfernen + stoppen
 ```
-
-**Ablauf beim Rendern** (Zeile 33–67):
-
-1. `r.getWidth()` / `r.getHeight()` – Aktuelle Fenstergröße ermitteln.
-2. Titel "ERA OF TRIBES" und Version "v1.0.0" mittig zeichnen.
-3. `startY = h * 0.4` – Y-Position des ersten Buttons (40% der Fensterhöhe).
-4. Schleife über `LABELS`:
-   - Jeder Button ist `btnW = 220` × `btnH = 50` Pixel groß.
-   - Abstand zwischen Buttons: `gap = 12` Pixel.
-   - Y-Position: `by = startY + i * (btnH + gap)`.
-   - Bei 4 Buttons ergibt das: `startY`, `startY+62`, `startY+124`, `startY+186`.
-   - Bei 1080p sind die Buttons ca. bei Y=432, 494, 556, 618 – alle gut sichtbar.
-5. Maus-Hover: Wenn Maus über einem Button, wird dieser blau hervorgehoben.
-6. Tastatur-Navigation: Pfeiltasten/Pfeiltasten oder W/S ändert `selected`.
-7. Klick/Auslösen ruft `activate()` auf.
-
-**`activate()`-Methode** (Zeile 69–76):
-
-```java
-switch (selected) {
-    case 0 -> engine.getSceneManager().switchTo("game");      // Play
-    case 1 -> engine.getSceneManager().switchTo("settings");   // Settings
-    case 2 -> engine.getSceneManager().switchTo("credits");    // Credits
-    case 3 -> System.exit(0);                                  // Quit
-}
-```
-
-Jeder Index entspricht genau dem Eintrag im `LABELS`-Array.
-
-**CreditsScene** (`CreditsScene.java`):
-- Zeigt zwei Textzeilen an: "Game Design by Arne Lorenz" und "Software Engineering & Web Development by Kilian Bogus".
-- Hat einen "Back"-Button, der mit `switchTo("main_menu")` zurück zum Hauptmenü führt.
-- Wurde über `register("credits", new CreditsScene(engine))` in `Game.java` registriert.
+</details>
 
 ---
 
-## Abhängigkeiten
+### 🔄 In Arbeit / Priorität
 
-- Java 17+ (build.gradle: `sourceCompatibility = JavaVersion.VERSION_17`)
-- Gson 2.11 – JSON-Parsing für Spiel-Definitionen
-- SLF4J + Logback – Logging
-- JNA 5.14 – Discord-Integration (Native Pipe)
-- Batik Transcoder 1.17 – SVG-Rendering
-- JUnit Jupiter 5.11 – Tests
+| Bereich | Feature | Status |
+|---------|---------|--------|
+| 🔊 Audio | Pfad-Vereinheitlichung über `gamePath` | 🔜 Geplant |
+| 🔊 Audio | Preload-Puffer für perfekte Loops | 🔜 Geplant |
+| 🔊 Audio | Szenen-Lebenszyklus (auto `clearTracks`) | 🔜 Geplant |
+| 🎮 Gameplay | Runden-basierte Phasen (Taxen, Produktion, …) | ✅ Basis |
+| 🧠 AI | Gegner-KI (Wirtschaft, Militär, Diplomatie) | 🔜 Geplant |
+| 🌐 Multiplayer | Lobby-System + Steam-Integration | 🔜 Geplant |
+| 🗺️ World | Prozedurale Weltgenerierung | 🔜 Geplant |
+| 🖼️ UI | Bildschirm-Übergänge + Animationen | 🔜 Geplant |
 
----
+### 💭 Langfristig
 
-## Credits
-
-**Game Design by Arne Lorenz**
-**Software Engineering & Web Development by Kilian Bogus**
-
----
-
-## Häufige Build-Probleme (Troubleshooting)
-
-### 1. Credits-Button fehlt im Hauptmenü
-
-**Symptom:**  
-Im Hauptmenü werden nur "Play", "Settings" und "Quit" angezeigt (drei statt vier Buttons). Der "Credits"-Button ist nicht zu sehen, obwohl die `MainMenuScene.java` auf der Festplatte `"Credits"` im `LABELS`-Array enthält.
+- **3D / Positional Audio** – räumlicher Sound für Einheiten/Kamera
+- **JavaScript-Scripting** – Events und KI per JS definierbar
+- **Modding-API** – komplette Inhalts-Mods ohne Java-Code
+- **Cloud-Saves** – Spielstand-Synchronisation
 
 ---
 
-#### Ursache 1 – Quellcode wurde nicht kompiliert
+## 🛠️ Build im Detail
 
-**Problem:**  
-Die Datei `MainMenuScene.java` wurde lokal bearbeitet (z. B. `LABELS` von `{"Play", "Settings", "Quit"}` auf `{"Play", "Settings", "Credits", "Quit"}` geändert), aber das Projekt wurde **nicht neu gebaut**. Das Spiel startet dann mit der alten `.class`-Datei aus `build/classes/java/main/`, die noch den alten Code ohne "Credits" enthält.
-
-**Erklärung der Build-Kette:**
-
-```
-MainMenuScene.java  (Quellcode)
-        │
-        │  compileJava (Gradle-Task)
-        ▼
-MainMenuScene.class  (Bytecode in build/classes/.../)
-        │
-        │  jar (Gradle-Task)
-        ▼
-EraOfTribes-1.0.0.jar  (alle .class-Dateien + Abhängigkeiten in build/libs/)
-        │
-        │  dist (Gradle-Task)
-        ▼
-EraEngine.jar  (Kopie in engine/)
-        │
-        │  launcher.bat: java -jar engine/EraEngine.jar --game game/
-        ▼
-Spiel läuft
+```bash
+gradlew clean build            # sauberer Build
+gradlew test                   # Tests ausführen
+gradlew runGame                # bauen + direkt starten
 ```
 
-Wenn Schritt 1 (`compileJava`) nicht durchgeführt wird, enthält die `.class`-Datei nicht den neuen Code. Wenn Schritt 4 (`dist`) fehlschlägt, wird zwar neu kompiliert, aber das alte JAR in `engine/` bleibt liegen.
-
-**Lösung:**  
-Vollständigen Clean-Build durchführen – damit werden alle alten Build-Artefakte gelöscht und alles neu erstellt:
+**Build-Phasen:**
 
 ```
+compileJava → jar → dist → engine/EraEngine.jar
+```
+
+Nach dem Build liegt das ausführbare JAR unter `engine/EraEngine.jar`.
+
+---
+
+## ❓ Troubleshooting
+
+### Credits-Button fehlt im Hauptmenü
+
+**Ursache:** Alte `.class`-Datei / altes JAR – Build nicht durchgelaufen.
+
+```bash
 gradlew clean build
 ```
 
-- `clean` löscht das gesamte `build/`-Verzeichnis.
-- `build` führt compileJava → jar → dist aus.
-- Danach `launcher.bat` ausführen.
-
-**Manuelle Prüfung, ob die Kompilierung funktioniert hat:**
-
-```
-# Nach dem Build: Prüfen, ob "Credits" in der .class-Datei vorkommt
-Select-String -Path build/classes/java/main/com/eraoftribes/game/scene/MainMenuScene.class -Pattern "Credits"
-```
-
-Ausgabe sollte `Credits` enthalten. Alternativ die `.java`-Datei mit dem Commit vergleichen:
-
-```
-git diff HEAD -- src/main/java/com/eraoftribes/game/scene/MainMenuScene.java
-```
-
-Erwartete Ausgabe:
-
-```diff
-- private static final String[] LABELS = {"Play", "Settings", "Quit"};
-+ private static final String[] LABELS = {"Play", "Settings", "Credits", "Quit"};
-...
-- case 2 -> System.exit(0);
-+ case 2 -> engine.getSceneManager().switchTo("credits");
-+ case 3 -> System.exit(0);
-```
-
----
-
-#### Ursache 2 – `dist`-Task kopiert JAR nicht (Build-Tool-Bug im Original)
-
-**Problem:**  
-Der `dist`-Task in `build.gradle` war ursprünglich so definiert:
-
-```groovy
-// FEHLERHAFTE Version:
-tasks.register('dist', Copy) {
-    dependsOn jar
-    from layout.buildDirectory.dir("libs/${rootProject.name}.jar")  // sucht nach EraOfTribes.jar
-    into layout.projectDirectory.dir('engine')
-    rename "${rootProject.name}.jar", 'EraEngine.jar'
-}
-```
-
-`rootProject.name` ist in `settings.gradle` (Zeile 1) als `EraOfTribes` definiert.  
-`version` ist in `build.gradle` (Zeile 6) als `'1.0.0'` definiert.
-
-Gradle benennt das JAR nach dem Schema `${rootProject.name}-${version}.jar`, also `EraOfTribes-1.0.0.jar`.
-
-Der `dist`-Task suchte aber nach `${rootProject.name}.jar`, also `EraOfTribes.jar` (ohne Version).  
-Da diese Datei nicht existiert, **wurde nichts kopiert**. Das alte `engine/EraEngine.jar` blieb unverändert liegen – und enthielt noch den Code ohne Credits-Button.
-
-**Warum war überhaupt eine alte `engine/EraEngine.jar` vorhanden?**  
-Wahrscheinlich wurde sie bei einem früheren Build manuell oder mit einer anderen Konfiguration dorthin kopiert, oder der `dist`-Task hat zu einem früheren Zeitpunkt funktioniert (bevor die `version` in `build.gradle` gesetzt wurde).
-
-**Lösung (seit Commit `...` gefixt):**  
-Der `dist`-Task wurde korrigiert, indem die Versionsnummer im Quellpfad berücksichtigt wird:
-
-```groovy
-// KORRIGIERTE Version (seit v1.0.0):
-tasks.register('dist', Copy) {
-    dependsOn jar
-    from layout.buildDirectory.dir("libs/${rootProject.name}-${project.version}.jar")
-    into layout.projectDirectory.dir('engine')
-    rename "${rootProject.name}-${project.version}.jar", 'EraEngine.jar'
-}
-```
-
-Damit wird `build/libs/EraOfTribes-1.0.0.jar` → `engine/EraEngine.jar` kopiert.
-
-**Alternative Lösung (wenn der Fix nicht angewendet werden kann):**  
-Manuelles Kopieren nach dem Build:
-
-```
-Copy-Item build/libs/EraOfTribes-1.0.0.jar engine/EraEngine.jar -Force
-```
-
-Dann mit `launcher.bat` starten.
-
----
-
-#### Diagnose: Welche der beiden Ursachen liegt vor?
-
-**Schritt 1 – Prüfen, ob die .class-Datei aktuell ist:**
-
-Vergleiche die Zeitstempel der `.java`- und `.class`-Dateien:
-
-```
-Get-Item src/main/java/com/eraoftribes/game/scene/MainMenuScene.java  | Select-Object LastWriteTime
-Get-Item build/classes/java/main/com/eraoftribes/game/scene/MainMenuScene.class | Select-Object LastWriteTime
-```
-
-- Wenn `.class` älter ist als `.java` → **Ursache 1** (nicht kompiliert).
-- Wenn `.class` neuer/gleich alt ist wie `.java` → Kompilierung OK → weiter zu Schritt 2.
-
-**Schritt 2 – Prüfen, ob das JAR aktuell ist:**
-
-```
-Get-Item build/libs/EraOfTribes-1.0.0.jar | Select-Object LastWriteTime
-Get-Item engine/EraEngine.jar | Select-Object LastWriteTime
-```
-
-- Wenn `EraEngine.jar` älter ist als `EraOfTribes-1.0.0.jar` → **Ursache 2** (dist hat nicht kopiert).
-- Wenn beide gleich alt sind → alles OK, der Fehler liegt woanders.
-
-**Schritt 3 – Prüfen, ob das JAR "Credits" enthält:**
-
-```
-& "C:\Program Files\Java\jdk-XX\bin\jar.exe" tf engine/EraEngine.jar | Select-String "CreditsScene"
-```
-
-Wenn `CreditsScene.class` enthalten ist, ist die Scene im JAR vorhanden.
-
-**Schritt 4 – Prüfen, ob die Credits-Scene geladen wird:**  
-Im Output beim Spielstart sollte Folgendes erscheinen:
-
-```
-[SceneManager] Switched to: main_menu
-[SceneManager] Switched to: credits
-[SceneManager] Switched to: main_menu
-```
-
-Wenn diese Zeilen im Log erscheinen (z. B. wenn man im Spiel auf Credits klickt oder der `--help`-Modus durchläuft), dann funktioniert die Scene-Verknüpfung grundsätzlich.
-
----
-
-### 2. `EraEngine.jar` wird nicht gefunden
-
-**Symptom:**  
-Beim Start mit `launcher.bat` erscheint:
-
-```
-[FEHLER] EraEngine.jar nicht gefunden.
-```
-
-**Ursache:**  
-Die Datei `engine/EraEngine.jar` existiert nicht. Das passiert, wenn noch nie ein Build durchgeführt wurde oder der `dist`-Task fehlgeschlagen ist.
-
-**Lösung:**
-
-```
-gradlew clean build
-```
-
-Danach sollte `engine/EraEngine.jar` vorhanden sein.
-
-**Prüfung:**
-
-```
+Prüfen:
+```bash
+# JAR auf Aktualität prüfen
 Test-Path engine/EraEngine.jar
-# → True
-```
-
----
-
-### 3. Gradle erkennt Quellcode-Änderungen nicht (`UP-TO-DATE`)
-
-**Symptom:**  
-Nach dem Ändern einer `.java`-Datei sagt Gradle beim Build:
-
-```
-> Task :compileJava UP-TO-DATE
-```
-
-Das bedeutet, Gradle denkt, der Code habe sich seit dem letzten Build nicht geändert, und überspringt die Kompilierung.
-
-**Ursache:**  
-Gradle verwendet **incrementale Builds**: Es speichert einen Cache von Datei-Hashes und Task-Eingaben. Wenn sich der Zeitstempel oder Inhalt einer Quelldatei geändert hat, sollte Gradle das normalerweise erkennen. In seltenen Fällen (z. B. nach einem `git checkout`, nach Systemzeit-Umstellungen oder wenn Dateien über externe Tools bearbeitet wurden) kann der Cache inkonsistent werden.
-
-**Lösung:**  
-Den gesamten Build-Cache löschen und neu bauen:
-
-```
-gradlew clean build
-```
-
-- `clean` löscht `build/` inklusive aller Caches.
-- `build` erstellt alles neu – alle Tasks laufen von Grund auf.
-
-**Alternativ (nur die Kompilierung erzwingen):**
-
-```
-gradlew clean compileJava
-```
-
-Das kompiliert nur, ohne JAR zu packen – nützlich zum schnellen Testen, ob der Code fehlerfrei ist.
-
----
-
-### 4. Vollständige Beispiel-Walkthrough
-
-Angenommen, du hast `MainMenuScene.java` geändert und der Credits-Button fehlt – hier ist der komplette Ablauf zur Fehlerbehebung:
-
-**Schritt 1 – Änderung prüfen:**
-
-```
-git diff HEAD -- src/main/java/com/eraoftribes/game/scene/MainMenuScene.java
-```
-
-**Schritt 2 – Alte Build-Artefakte löschen und neu bauen:**
-
-```
-gradlew clean build
-```
-
-**Schritt 3 – Prüfen, ob das JAR in engine/ aktualisiert wurde:**
-
-```
 Get-Item engine/EraEngine.jar | Select-Object LastWriteTime, Length
 ```
 
-Der Zeitstempel sollte jetzt der aktuelle sein.
+### `UP-TO-DATE` trotz Code-Änderung
 
-**Schritt 4 – Spiel starten:**
-
-```
-launcher.bat
+```bash
+gradlew clean compileJava      # Kompilierung erzwingen
 ```
 
-**Schritt 5 – Im Hauptmenü prüfen, ob "Credits" als vierter Button erscheint.**
+### `EraEngine.jar` nicht gefunden
 
-Falls nicht:
-
-**Schritt 6 – Log prüfen** (wenn `--log logs/` übergeben wurde):
-
+```bash
+gradlew clean build
 ```
-Get-Content logs\launch.log
-```
-
-Nach Zeilen mit `[SceneManager]` oder `[ERROR]` suchen.
-
-**Schritt 7 – Manuelles Kopieren versuchen, falls der dist-Task nicht funktioniert:**
-
-```
-Copy-Item build/libs/EraOfTribes-1.0.0.jar engine/EraEngine.jar -Force
-```
-
-Dann wieder `launcher.bat` starten.
 
 ---
 
+## 🏆 Credits
+
+**Game Design** – Arne Lorenz  
+**Software Engineering & Web Development** – Kilian Bogus
+
 ---
 
-## Roadmap
-
-### ✅ Erledigt
-
-- **Audio-Engine (Soundplayer)** – `.wav` und `.mp3` via `javax.sound.sampled` + MP3SPI.
-  - `loadTrack(id, datei, loop, volume)` – Track registrieren
-  - `play(id)` – SFX (einmalig, Thread-Pool) oder Musik (loop, eigener Thread)
-  - `stop(id)` / `stopAll()` – Stoppen aller aktiven Wiedergaben
-  - `setVolume()`, `setMusicVolume()`, `setSFXVolume()` – Lautstärkeregelung für Master/Musik/SFX
-  - Volume-Änderung wirkt **sofort** auf aktive SFX und Musik (via `CopyOnWriteArrayList<ActiveSFX>`)
-  - **Fade-out** (300ms) beim Stoppen von Musik – kein harter Cut-Off
-  - **Nahtlose Loops** – `SourceDataLine` bleibt zwischen Iterationen geöffnet
-  - **`clearTracks()`** – entlädt alle Tracks + stoppt Wiedergabe (für Szenenwechsel)
-  - `sfxPool` bleibt dauerhaft aktiv (kein `shutdownNow` mehr)
-  - **JUnit-Tests** – 14 Tests für die Audio-Engine (`AudioEngineTest.java`)
-
-### 🔄 Noch offen / geplant
-
-- **Audio-Ordner** – `game/audio/` existiert, aber Pfade sind aktuell absolute/relative Caller-Pfade. Ein einheitlicher `AudioManager`-Pfad via `gamePath` wäre sauberer.
-- **Preload-Puffer** – für ganz nahtlose Loops bei großen MP3s könnte man das Ende des Tracks vorab in einen Ringbuffer laden.
-- **Szenen-Lebenszyklus automatisch** – `clearTracks()` könnte automatisch in `Scene.onLeave()` gerufen werden, wenn Audio-Systeme pro Szene getrennt werden sollen.
-- **3D / Positional Audio** – für später, wenn Einheiten/Kamera Positionen bekommen.
-
-*Black Beacon Games*
+*© Black Beacon Games*
