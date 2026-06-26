@@ -6,7 +6,7 @@ public class DiscordConfig {
     public String state = "In menu";
     public String details = "Playing Era of Tribes";
     public String largeImageKey = "logo";
-    public String largeImageText = "Era of Tribes v1.0.0";
+    public String largeImageText = "Era of Tribes v0.0.3";
     public String smallImageKey = "";
     public String smallImageText = "";
     public int partyMin = 1;

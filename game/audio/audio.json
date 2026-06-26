@@ -3,20 +3,21 @@
   "masterVolume": 1.0,
   "tracks": {
     "music": {
-      "menu":     { "file": "menu.ogg",     "loop": true,  "volume": 0.7 },
-      "game":     { "file": "game.ogg",     "loop": true,  "volume": 0.6 },
-      "combat":   { "file": "combat.ogg",   "loop": false, "volume": 0.8 },
-      "peace":    { "file": "peace.ogg",    "loop": true,  "volume": 0.5 },
-      "war":      { "file": "war.ogg",      "loop": true,  "volume": 0.7 },
-      "victory":  { "file": "victory.ogg",  "loop": false, "volume": 1.0 },
-      "defeat":   { "file": "defeat.ogg",   "loop": false, "volume": 0.8 }
+      "loading":  { "file": "loading.mp3",  "loop": true,  "volume": 0.6 },
+      "menu":     { "file": "menu.mp3",     "loop": true,  "volume": 0.7 },
+      "game":     { "file": "game.mp3",     "loop": true,  "volume": 0.6 },
+      "combat":   { "file": "combat.mp3",   "loop": false, "volume": 0.8 },
+      "peace":    { "file": "peace.mp3",    "loop": true,  "volume": 0.5 },
+      "war":      { "file": "war.mp3",      "loop": true,  "volume": 0.7 },
+      "victory":  { "file": "victory.mp3",  "loop": false, "volume": 1.0 },
+      "defeat":   { "file": "defeat.mp3",   "loop": false, "volume": 0.8 }
     },
     "ambient": {
-      "day":    { "file": "day_ambient.ogg",   "loop": true, "volume": 0.4 },
-      "night":  { "file": "night_ambient.ogg", "loop": true, "volume": 0.3 },
-      "city":   { "file": "city_ambient.ogg",  "loop": true, "volume": 0.5 },
-      "nature": { "file": "nature_ambient.ogg","loop": true, "volume": 0.4 },
-      "ocean":  { "file": "ocean_ambient.ogg", "loop": true, "volume": 0.3 }
+      "day":    { "file": "day_ambient.mp3",   "loop": true, "volume": 0.4 },
+      "night":  { "file": "night_ambient.mp3", "loop": true, "volume": 0.3 },
+      "city":   { "file": "city_ambient.mp3",  "loop": true, "volume": 0.5 },
+      "nature": { "file": "nature_ambient.mp3","loop": true, "volume": 0.4 },
+      "ocean":  { "file": "ocean_ambient.mp3", "loop": true, "volume": 0.3 }
     },
     "sfx": {
       "ui_click":       { "file": "click.wav",        "volume": 0.8 },

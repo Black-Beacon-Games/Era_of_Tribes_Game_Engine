@@ -48,8 +48,21 @@ tasks.named('jar') {
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 }
 
+tasks.register('copyAssets', Copy) {
+    from layout.projectDirectory.dir('assets/loadingscreen').file('mainthema.mp3')
+    into layout.projectDirectory.dir('game/audio')
+    rename 'mainthema.mp3', 'loading.mp3'
+    doLast {
+        copy {
+            from layout.projectDirectory.dir('assets/menu').file('mainthema.mp3')
+            into layout.projectDirectory.dir('game/audio')
+            rename 'mainthema.mp3', 'menu.mp3'
+        }
+    }
+}
+
 tasks.register('dist', Copy) {
-    dependsOn jar
+    dependsOn jar, copyAssets
     from layout.buildDirectory.dir("libs/${rootProject.name}-${project.version}.jar")
     into layout.projectDirectory.dir('engine')
     rename "${rootProject.name}-${project.version}.jar", 'EraEngine.jar'

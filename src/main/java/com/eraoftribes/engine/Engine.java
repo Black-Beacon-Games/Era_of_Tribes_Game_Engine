@@ -15,6 +15,9 @@ import com.eraoftribes.engine.world.WorldGenerator;
 import com.eraoftribes.game.Game;
 import java.io.File;
 import java.io.IOException;
+import java.lang.management.ManagementFactory;
+import java.lang.management.MemoryMXBean;
+import java.lang.management.MemoryUsage;
 
 public class Engine {
     private final String[] args;
@@ -33,6 +36,15 @@ public class Engine {
     private DiscordManager discord;
     private String lastSceneId;
     private String gamePath;
+    private Game game;
+
+    private DebugConsole debugConsole;
+    private boolean lastConsoleState;
+
+    private long lastFpsTime;
+    private int frameCount;
+    private int fps;
+    private double frameTimeMs;
 
     public Engine(String[] args) {
         this.args = args;
@@ -40,7 +52,7 @@ public class Engine {
 
     public void init() {
         System.out.println("============================================");
-        System.out.println(" Era of Tribes Engine v1.0.0");
+        System.out.println(" Era of Tribes Engine v0.0.3");
         System.out.println("============================================");
 
         parseArgs();
@@ -71,6 +83,7 @@ public class Engine {
         ui = new UIEngine(gamePath + "/ui");
         scriptEngine = new ScriptEngine();
         worldGenerator = new WorldGenerator();
+        debugConsole = new DebugConsole();
 
         DiscordConfig dc = new DiscordConfig();
         try {
@@ -85,6 +98,7 @@ public class Engine {
     }
 
     public void start(Game game) {
+        this.game = game;
         renderer.createWindow("Era of Tribes", config.renderer.resolution.width, config.renderer.resolution.height);
         new Thread(() -> { try { discord.init(); } catch (Exception e) { System.err.println("[Discord] Init error: " + e.getMessage()); } }, "discord-init").start();
         try {
@@ -93,24 +107,42 @@ public class Engine {
             System.err.println("[Engine] Scene switch error: " + e.getMessage());
             e.printStackTrace();
         }
-        gameLoop(game);
+        gameLoop();
     }
 
-    private void gameLoop(Game game) {
-        long lastTime = 0;
-        double nsPerTick = 1000000000.0 / 60.0;
+    private void gameLoop() {
+        long lastTime = System.nanoTime();
+        lastFpsTime = System.currentTimeMillis();
+        int targetFps = config.renderer != null && config.renderer.targetFps > 0
+            ? config.renderer.targetFps : 200;
+        double targetInterval = 1_000_000_000.0 / targetFps;
+
         while (!renderer.shouldClose()) {
             try {
                 long now = System.nanoTime();
-                if (now - lastTime < nsPerTick) {
-                    try { Thread.sleep(1); } catch (InterruptedException e) { Thread.currentThread().interrupt(); break; }
-                    continue;
-                }
+                double delta = (now - lastTime) / 1_000_000_000.0;
                 lastTime = now;
 
+                if (delta > 0.1) delta = 0.016;
+                frameTimeMs = delta * 1000;
+
+                frameCount++;
+                long nowMs = System.currentTimeMillis();
+                if (nowMs - lastFpsTime >= 1000) {
+                    fps = frameCount;
+                    frameCount = 0;
+                    lastFpsTime = nowMs;
+                }
+
+                if (config.debug != null && config.debug.console != lastConsoleState) {
+                    lastConsoleState = config.debug.console;
+                    if (config.debug.console) debugConsole.show();
+                    else debugConsole.hide();
+                }
+
                 input.poll();
-                game.update(0.016);
-                sceneManager.update(0.016);
+                game.update(delta);
+                sceneManager.update(delta);
 
                 String sid = sceneManager.getCurrentSceneId();
                 if (sid != null && !sid.equals(lastSceneId)) {
@@ -120,14 +152,68 @@ public class Engine {
 
                 renderer.beginFrame();
                 sceneManager.render(renderer);
+                renderDebugOverlay(renderer);
                 renderer.endFrame();
+
+                long elapsed = System.nanoTime() - now;
+                if (elapsed < targetInterval) {
+                    long sleepNs = (long) (targetInterval - elapsed);
+                    Thread.sleep(sleepNs / 1_000_000, (int) (sleepNs % 1_000_000));
+                }
             } catch (Exception e) {
                 System.err.println("[Engine] Game loop error: " + e.getMessage());
+                System.out.println("[Engine] Game loop error: " + e.getMessage());
                 e.printStackTrace();
                 break;
             }
         }
         shutdown();
+    }
+
+    private void renderDebugOverlay(Renderer r) {
+        EngineConfig.DebugConfig debug = config.debug;
+        if (debug == null) return;
+        boolean any = debug.fpsOverlay || debug.profiling || debug.showMemory
+            || debug.showVersion || debug.showCoordinates;
+        if (!any) return;
+
+        int x = 10;
+        int y = 10;
+        int lineH = 18;
+        var font = r.getSmallFont();
+
+        if (debug.fpsOverlay) {
+            r.drawText("FPS: " + fps, x, y += lineH, 0, 1, 0, 1, font);
+        }
+        if (debug.profiling) {
+            r.drawText(String.format("Frame: %.2f ms", frameTimeMs), x, y += lineH, 1, 1, 0, 1, font);
+            Runtime rt = Runtime.getRuntime();
+            long used = rt.totalMemory() - rt.freeMemory();
+            r.drawText("Heap: " + (used / 1024 / 1024) + " MB", x, y += lineH, 1, 1, 0, 1, font);
+        }
+        if (debug.showMemory) {
+            MemoryMXBean mem = ManagementFactory.getMemoryMXBean();
+            MemoryUsage heap = mem.getHeapMemoryUsage();
+            MemoryUsage nonHeap = mem.getNonHeapMemoryUsage();
+            r.drawText("Heap: " + (heap.getUsed() / 1024 / 1024) + "/" + (heap.getMax() / 1024 / 1024) + " MB", x, y += lineH, 0, 1, 1, 1, font);
+            r.drawText("Non-Heap: " + (nonHeap.getUsed() / 1024 / 1024) + "/" + (nonHeap.getMax() / 1024 / 1024) + " MB", x, y += lineH, 0, 1, 1, 1, font);
+            r.drawText("Threads: " + ManagementFactory.getThreadMXBean().getThreadCount(), x, y += lineH, 0, 1, 1, 1, font);
+        }
+        if (debug.showVersion) {
+            int rx = r.getWidth() - 200;
+            int ry = 10;
+            r.drawText("Engine: " + (config.version != null ? config.version : "?"), rx, ry += lineH, 0.5f, 0.8f, 1, 1, font);
+            r.drawText("Game: " + "Era of Tribes", rx, ry += lineH, 0.5f, 0.8f, 1, 1, font);
+            r.drawText("Java: " + System.getProperty("java.version"), rx, ry += lineH, 0.5f, 0.8f, 1, 1, font);
+            r.drawText("OS: " + System.getProperty("os.name"), rx, ry += lineH, 0.5f, 0.8f, 1, 1, font);
+        }
+        if (debug.showCoordinates) {
+            int mx = r.getMouseX();
+            int my = r.getMouseY();
+            int cx = r.getWidth() - 200;
+            int cy = r.getHeight() - 40;
+            r.drawText("Mouse: " + mx + ", " + my, cx, cy, 1, 0.5f, 0.5f, 1, font);
+        }
     }
 
     private void updateDiscordPresence(String sceneId) {
@@ -151,6 +237,7 @@ public class Engine {
     }
 
     private void shutdown() {
+        config.save();
         saveManager.saveAll();
         network.disconnect();
         audio.stopAll();
@@ -184,4 +271,5 @@ public class Engine {
     public WorldGenerator getWorldGenerator() { return worldGenerator; }
     public DiscordManager getDiscord() { return discord; }
     public String getGamePath() { return gamePath; }
+    public Game getGame() { return game; }
 }

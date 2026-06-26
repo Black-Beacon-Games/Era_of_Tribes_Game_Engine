@@ -69,17 +69,29 @@ public class LoadingScene extends Scene {
         loadAssets();
         loadQuotes();
         pickRandomQuote();
+        startMusic();
+    }
+
+    public void onLeave() {
+        engine.getAudio().stop("loading");
+    }
+
+    private void startMusic() {
+        String base = engine.getGamePath() + "/audio/";
+        engine.getAudio().loadTrack("loading", base + "loading.mp3", true, 0.6);
+        engine.getAudio().play("loading");
     }
 
     private void loadAssets() {
-        String base = "assets/loadingscreen/background/";
+        var r = engine.getRenderer();
+        String base = "assets/loadingscreen/";
 
-        bgTex = engine.getRenderer().loadTexture(base + "background.png");
-        if (bgTex == 0) bgTex = engine.getRenderer().loadTexture(base + "background.jpg");
+        bgTex = r.loadTexture(base + "background.png");
+        if (bgTex == 0) bgTex = r.loadTexture(base + "background.jpg");
+        if (bgTex == 0) bgTex = r.loadTexture(base + "background.jpeg");
 
-        logoTex = engine.getRenderer().loadTexture(base + "logo.svg",
-            engine.getRenderer().getWidth() > 0 ? engine.getRenderer().getWidth() / 2 : 400,
-            120);
+        logoTex = r.loadTexture(base + "logo.svg",
+            r.getWidth() > 0 ? r.getWidth() / 2 : 400, 120);
 
         assetsReady = bgTex != 0;
         System.out.println("[LoadingScreen] Assets loaded: bg=" + (bgTex != 0)
@@ -145,7 +157,7 @@ public class LoadingScene extends Scene {
         int h = r.getHeight();
 
         if (assetsReady) {
-            r.drawTextureFull(bgTex);
+            r.drawTextureCover(bgTex);
             r.drawRect(0, 0, w, h, 0, 0, 0, 0.45f);
         } else {
             r.drawRect(0, 0, w, h, 0.04f, 0.04f, 0.07f, 1);
@@ -188,6 +200,6 @@ public class LoadingScene extends Scene {
             r.drawTextCentered("\u201C" + currentQuote + "\u201D", w / 2, (int) (h * 0.68), 0.6f, 0.6f, 0.6f, 1, r.getSmallFont());
         }
 
-        r.drawTextCentered("v1.0.0", w / 2, h - 20, 0.4f, 0.4f, 0.4f, 1, r.getSmallFont());
+        r.drawTextCentered("v0.0.3", w / 2, h - 20, 0.4f, 0.4f, 0.4f, 1, r.getSmallFont());
     }
 }

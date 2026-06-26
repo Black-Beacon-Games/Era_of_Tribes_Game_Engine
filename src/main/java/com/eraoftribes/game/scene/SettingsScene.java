@@ -150,6 +150,15 @@ public class SettingsScene extends Scene {
             new Setting("Profiling:   " + (cfg.debug.profiling ? "ON" : "OFF"), () -> {
                 cfg.debug.profiling = !cfg.debug.profiling;
             }),
+            new Setting("Show Memory: " + (cfg.debug.showMemory ? "ON" : "OFF"), () -> {
+                cfg.debug.showMemory = !cfg.debug.showMemory;
+            }),
+            new Setting("Show Ver:    " + (cfg.debug.showVersion ? "ON" : "OFF"), () -> {
+                cfg.debug.showVersion = !cfg.debug.showVersion;
+            }),
+            new Setting("Show Coords: " + (cfg.debug.showCoordinates ? "ON" : "OFF"), () -> {
+                cfg.debug.showCoordinates = !cfg.debug.showCoordinates;
+            }),
             new Setting("Log Level:   " + cfg.debug.logLevel, () -> {
                 int li = 0;
                 for (int i = 0; i < LOG_LEVELS.length; i++) if (LOG_LEVELS[i].equals(cfg.debug.logLevel)) { li = i; break; }
@@ -225,6 +234,7 @@ public class SettingsScene extends Scene {
             if (hover && r.isMouseClicked()) {
                 r.consumeClick();
                 sets[i].toggle().run();
+                engine.getConfig().save();
                 dirty = true;
                 return;
             }

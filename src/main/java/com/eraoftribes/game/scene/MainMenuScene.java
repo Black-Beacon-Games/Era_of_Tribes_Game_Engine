@@ -12,15 +12,47 @@ public class MainMenuScene extends Scene {
     private static final String[] LABELS = {"Play", "Settings", "Credits", "Quit"};
     private int selected;
 
+    private int bgTex;
+    private int logoTex;
+    private boolean assetsReady;
+
     public MainMenuScene(Engine engine, Game game) {
         super("main_menu");
         this.engine = engine;
         this.game = game;
         this.selected = 0;
+        this.bgTex = 0;
+        this.logoTex = 0;
+        this.assetsReady = false;
     }
 
     public void onEnter() {
         selected = 0;
+        assetsReady = false;
+        loadAssets();
+        String base = engine.getGamePath() + "/audio/";
+        engine.getAudio().loadTrack("menu_music", base + "menu.mp3", true, 0.7);
+        engine.getAudio().play("menu_music");
+    }
+
+    public void onLeave() {
+        engine.getAudio().stop("menu_music");
+    }
+
+    private void loadAssets() {
+        var r = engine.getRenderer();
+        String base = "assets/menu/";
+
+        bgTex = r.loadTexture(base + "background.png");
+        if (bgTex == 0) bgTex = r.loadTexture(base + "background.jpg");
+        if (bgTex == 0) bgTex = r.loadTexture(base + "background.jpeg");
+
+        logoTex = r.loadTexture(base + "logo.svg",
+            r.getWidth() > 0 ? r.getWidth() / 2 : 400, 120);
+
+        assetsReady = bgTex != 0;
+        System.out.println("[MainMenu] Assets loaded: bg=" + (bgTex != 0)
+            + " logo=" + (logoTex != 0));
     }
 
     public void update(double dt) {
@@ -35,10 +67,24 @@ public class MainMenuScene extends Scene {
         int h = r.getHeight();
         int cx = w / 2;
 
-        r.drawRect(0, 0, w, h, 0.05f, 0.05f, 0.08f, 1);
+        if (assetsReady) {
+            r.drawTextureCover(bgTex);
+            r.drawRect(0, 0, w, h, 0, 0, 0, 0.35f);
+        } else {
+            r.drawRect(0, 0, w, h, 0.05f, 0.05f, 0.08f, 1);
+        }
 
-        r.drawTextCentered("ERA OF TRIBES", cx, (int) (h * 0.2), 0.8f, 0.6f, 0.2f, 1, r.getTitleFont());
-        r.drawTextCentered("v1.0.0", cx, (int) (h * 0.2) + 35, 0.5f, 0.5f, 0.5f, 1, r.getSmallFont());
+        int logoW = (int) (w * 0.5f);
+        int logoH = (int) (logoW * 0.3f);
+        int logoX = (w - logoW) / 2;
+        int logoY = (int) (h * 0.12);
+
+        if (logoTex != 0) {
+            r.drawTexture(logoTex, logoX, logoY, logoW, logoH);
+        } else {
+            r.drawTextCentered("ERA OF TRIBES", cx, (int) (h * 0.2), 0.8f, 0.6f, 0.2f, 1, r.getTitleFont());
+        }
+        r.drawTextCentered("v0.0.3", cx, logoY + logoH + 15, 0.5f, 0.5f, 0.5f, 1, r.getSmallFont());
 
         int btnW = 220;
         int btnH = 50;

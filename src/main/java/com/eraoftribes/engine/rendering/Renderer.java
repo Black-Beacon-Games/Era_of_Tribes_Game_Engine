@@ -238,6 +238,26 @@ public class Renderer {
         drawTexture(textureId, 0, 0, width, height);
     }
 
+    public void drawTextureCover(int textureId) {
+        BufferedImage img = textures.get(textureId);
+        if (img == null || g == null) return;
+        float imgAspect = (float) img.getWidth() / img.getHeight();
+        float winAspect = (float) width / height;
+        int drawW, drawH, drawX, drawY;
+        if (imgAspect > winAspect) {
+            drawH = height;
+            drawW = (int) (height * imgAspect);
+            drawX = (width - drawW) / 2;
+            drawY = 0;
+        } else {
+            drawW = width;
+            drawH = (int) (width / imgAspect);
+            drawX = 0;
+            drawY = (height - drawH) / 2;
+        }
+        g.drawImage(img, drawX, drawY, drawW, drawH, null);
+    }
+
     public int loadTexture(String path) {
         try {
             BufferedImage img = ImageIO.read(new File(path));

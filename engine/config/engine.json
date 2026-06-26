@@ -1,6 +1,6 @@
 {
   "engine": "EraEngine",
-  "version": "1.0.0",
+  "version": "0.0.3",
   "game": "Era of Tribes",
   "renderer": {
     "backend": "opengl",
@@ -47,7 +47,10 @@
   "debug": {
     "console": false,
     "fpsOverlay": false,
-    "logLevel": "info",
-    "profiling": false
+    "profiling": false,
+    "showMemory": false,
+    "showVersion": false,
+    "showCoordinates": false,
+    "logLevel": "info"
   }
 }
