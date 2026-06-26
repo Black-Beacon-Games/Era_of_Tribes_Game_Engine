@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.eraoftribes.engine.audio.AudioEngineTest" tests="14" skipped="0" failures="0" errors="0" timestamp="2026-06-26T13:16:07.415Z" hostname="UM-790-PRO" time="0.046">
+  <properties/>
+  <testcase name="clearTracks_removesAllTracksAndStopsPlayback()" classname="com.eraoftribes.engine.audio.AudioEngineTest" time="0.02"/>
+  <testcase name="stopAll_clearsActiveSFX()" classname="com.eraoftribes.engine.audio.AudioEngineTest" time="0.0"/>
+  <testcase name="stop_setsClipStopped()" classname="com.eraoftribes.engine.audio.AudioEngineTest" time="0.0"/>
+  <testcase name="clearTracks_withActiveSFX_doesNotCrash()" classname="com.eraoftribes.engine.audio.AudioEngineTest" time="0.001"/>
+  <testcase name="multipleTracks_canBeStoppedIndependently()" classname="com.eraoftribes.engine.audio.AudioEngineTest" time="0.001"/>
+  <testcase name="play_unknownId_doesNotAddToActiveSFX()" classname="com.eraoftribes.engine.audio.AudioEngineTest" time="0.001"/>
+  <testcase name="stopAll_stopsAllClipsAndClearsMusic()" classname="com.eraoftribes.engine.audio.AudioEngineTest" time="0.0"/>
+  <testcase name="setVolume_getVolumeWorkAsExpected()" classname="com.eraoftribes.engine.audio.AudioEngineTest" time="0.001"/>
+  <testcase name="stop_unknownId_doesNothing()" classname="com.eraoftribes.engine.audio.AudioEngineTest" time="0.001"/>
+  <testcase name="setSFXVolume_appliesToActiveSFX()" classname="com.eraoftribes.engine.audio.AudioEngineTest" time="0.0"/>
+  <testcase name="setMusicVolume_updateMusicUpdatesVolumeField()" classname="com.eraoftribes.engine.audio.AudioEngineTest" time="0.0"/>
+  <testcase name="loadTrack_overwritesExisting()" classname="com.eraoftribes.engine.audio.AudioEngineTest" time="0.0"/>
+  <testcase name="loadTrack_storesClip()" classname="com.eraoftribes.engine.audio.AudioEngineTest" time="0.0"/>
+  <testcase name="loadTrack_withLoopTrue_setsLoopFlag()" classname="com.eraoftribes.engine.audio.AudioEngineTest" time="0.0"/>
+  <system-out><![CDATA[[AudioEngine] Initialized.
+[AudioEngine] Initialized.
+[AudioEngine] Initialized.
+[AudioEngine] Initialized.
+[AudioEngine] Initialized.
+[AudioEngine] Initialized.
+[AudioEngine] Initialized.
+[AudioEngine] Initialized.
+[AudioEngine] Initialized.
+[AudioEngine] Initialized.
+[AudioEngine] Initialized.
+[AudioEngine] Initialized.
+[AudioEngine] Initialized.
+[AudioEngine] Initialized.
+]]></system-out>
+  <system-err><![CDATA[[AudioEngine] Track not found: nonexistent
+]]></system-err>
+</testsuite>

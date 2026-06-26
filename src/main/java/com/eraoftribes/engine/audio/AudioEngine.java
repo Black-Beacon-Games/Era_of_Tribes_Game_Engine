@@ -7,10 +7,14 @@ import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class AudioEngine {
+    private static final int FADE_MS = 300;
+    private static final int FADE_STEPS = 30;
+
     private final AudioConfig config;
     private final Map<String, SoundClip> clips = new HashMap<>();
     private final ExecutorService sfxPool = Executors.newCachedThreadPool(r -> {
@@ -18,6 +22,7 @@ public class AudioEngine {
         t.setDaemon(true);
         return t;
     });
+    private final CopyOnWriteArrayList<ActiveSFX> activeSFX = new CopyOnWriteArrayList<>();
     private MusicPlayer currentMusic;
     private double masterVolume = 1.0;
     private double musicVolume = 1.0;
@@ -44,7 +49,15 @@ public class AudioEngine {
         if (clip.loop) {
             playMusic(clip);
         } else {
-            sfxPool.submit(() -> playSource(clip, sfxVolume * masterVolume));
+            var sfx = new ActiveSFX(clip);
+            activeSFX.add(sfx);
+            sfxPool.submit(() -> {
+                try {
+                    playSource(sfx);
+                } finally {
+                    activeSFX.remove(sfx);
+                }
+            });
         }
     }
 
@@ -56,42 +69,47 @@ public class AudioEngine {
         currentMusic.start();
     }
 
-    void playSource(SoundClip clip, double volume) {
-        var file = new File(clip.file);
+    private void playSource(ActiveSFX sfx) {
+        var file = new File(sfx.clip.file);
         if (!file.exists()) {
-            System.err.println("[AudioEngine] File not found: " + clip.file);
+            System.err.println("[AudioEngine] File not found: " + sfx.clip.file);
             return;
         }
         SourceDataLine line = null;
         try (var ais = AudioSystem.getAudioInputStream(file)) {
-            var baseFormat = ais.getFormat();
-            var targetFormat = new AudioFormat(
-                AudioFormat.Encoding.PCM_SIGNED,
-                baseFormat.getSampleRate(), 16, baseFormat.getChannels(),
-                baseFormat.getChannels() * 2, baseFormat.getSampleRate(), false
-            );
-            try (var das = AudioSystem.getAudioInputStream(targetFormat, ais)) {
-                var info = new DataLine.Info(SourceDataLine.class, targetFormat);
+            var fmt = toPCM(ais.getFormat());
+            try (var das = AudioSystem.getAudioInputStream(fmt, ais)) {
+                var info = new DataLine.Info(SourceDataLine.class, fmt);
                 line = (SourceDataLine) AudioSystem.getLine(info);
-                line.open(targetFormat);
-                setVolume(line, volume);
+                line.open(fmt);
+                sfx.line = line;
+                applyVolume(line, sfx.clip.volume * sfxVolume * masterVolume);
                 line.start();
                 var buf = new byte[4096];
                 int n;
                 while ((n = das.read(buf)) != -1) {
-                    if (clip.stopped) break;
+                    if (sfx.stopped) break;
                     line.write(buf, 0, n);
                 }
-                line.drain();
+                if (!sfx.stopped) line.drain();
             }
         } catch (UnsupportedAudioFileException | IOException | LineUnavailableException e) {
-            System.err.println("[AudioEngine] Playback error: " + clip.file + " - " + e.getMessage());
+            System.err.println("[AudioEngine] Playback error: " + sfx.clip.file + " - " + e.getMessage());
         } finally {
+            sfx.line = null;
             if (line != null) line.close();
         }
     }
 
-    void setVolume(SourceDataLine line, double vol) {
+    private static AudioFormat toPCM(AudioFormat src) {
+        return new AudioFormat(
+            AudioFormat.Encoding.PCM_SIGNED,
+            src.getSampleRate(), 16, src.getChannels(),
+            src.getChannels() * 2, src.getSampleRate(), false
+        );
+    }
+
+    void applyVolume(SourceDataLine line, double vol) {
         if (vol < 0.0) vol = 0.0;
         if (vol > 1.0) vol = 1.0;
         if (line.isControlSupported(FloatControl.Type.MASTER_GAIN)) {
@@ -102,9 +120,33 @@ public class AudioEngine {
         }
     }
 
+    private void applyFadeOut(SourceDataLine line) {
+        if (line == null || !line.isOpen()) return;
+        try {
+            if (!line.isControlSupported(FloatControl.Type.MASTER_GAIN)) return;
+            var gain = (FloatControl) line.getControl(FloatControl.Type.MASTER_GAIN);
+            float start = gain.getValue();
+            float end = gain.getMinimum();
+            for (int i = 1; i <= FADE_STEPS; i++) {
+                float t = (float) i / FADE_STEPS;
+                gain.setValue(start + (end - start) * t);
+                Thread.sleep(FADE_MS / FADE_STEPS);
+            }
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        }
+    }
+
     public void stop(String id) {
         var clip = clips.get(id);
-        if (clip != null) clip.stopped = true;
+        if (clip == null) return;
+        clip.stopped = true;
+        if (currentMusic != null && currentMusic.clip == clip) {
+            currentMusic.cancel();
+        }
+        for (var sfx : activeSFX) {
+            if (sfx.clip == clip) sfx.close();
+        }
     }
 
     public void stopAll() {
@@ -112,11 +154,14 @@ public class AudioEngine {
             currentMusic.cancel();
             currentMusic = null;
         }
+        for (var sfx : activeSFX) sfx.close();
         for (var clip : clips.values()) clip.stopped = true;
     }
 
-    public void setVolume(double volume) {
-        this.masterVolume = volume;
+    public void setVolume(double v) {
+        this.masterVolume = v;
+        if (currentMusic != null) currentMusic.updateVolume();
+        updateActiveSFXVolume();
     }
 
     public void setMusicVolume(double v) {
@@ -126,9 +171,31 @@ public class AudioEngine {
 
     public void setSFXVolume(double v) {
         this.sfxVolume = v;
+        updateActiveSFXVolume();
     }
 
-    private static class SoundClip {
+    private void updateActiveSFXVolume() {
+        for (var sfx : activeSFX) sfx.updateVolume(this);
+    }
+
+    public void clearTracks() {
+        stopAll();
+        clips.clear();
+    }
+
+    public Map<String, SoundClip> getClips() {
+        return clips;
+    }
+
+    public MusicPlayer getCurrentMusic() {
+        return currentMusic;
+    }
+
+    public CopyOnWriteArrayList<ActiveSFX> getActiveSFX() {
+        return activeSFX;
+    }
+
+    static class SoundClip {
         final String file;
         final boolean loop;
         final double volume;
@@ -141,10 +208,33 @@ public class AudioEngine {
         }
     }
 
-    private static class MusicPlayer extends Thread {
-        private final SoundClip clip;
+    class ActiveSFX {
+        final SoundClip clip;
+        volatile boolean stopped;
+        volatile SourceDataLine line;
+
+        ActiveSFX(SoundClip clip) {
+            this.clip = clip;
+        }
+
+        void updateVolume(AudioEngine engine) {
+            var l = line;
+            if (l != null && l.isOpen()) {
+                engine.applyVolume(l, clip.volume * engine.sfxVolume * engine.masterVolume);
+            }
+        }
+
+        void close() {
+            stopped = true;
+            var l = line;
+            if (l != null) l.close();
+        }
+    }
+
+    static class MusicPlayer extends Thread {
+        final SoundClip clip;
         private final AudioEngine engine;
-        private SourceDataLine line;
+        private volatile SourceDataLine line;
 
         MusicPlayer(SoundClip clip, AudioEngine engine) {
             super("audio-music");
@@ -162,47 +252,49 @@ public class AudioEngine {
             }
             do {
                 try (var ais = AudioSystem.getAudioInputStream(file)) {
-                    var baseFormat = ais.getFormat();
-                    var targetFormat = new AudioFormat(
-                        AudioFormat.Encoding.PCM_SIGNED,
-                        baseFormat.getSampleRate(), 16, baseFormat.getChannels(),
-                        baseFormat.getChannels() * 2, baseFormat.getSampleRate(), false
-                    );
-                    try (var das = AudioSystem.getAudioInputStream(targetFormat, ais)) {
-                        var info = new DataLine.Info(SourceDataLine.class, targetFormat);
-                        line = (SourceDataLine) AudioSystem.getLine(info);
-                        line.open(targetFormat);
-                        engine.setVolume(line, clip.volume * engine.musicVolume * engine.masterVolume);
-                        line.start();
+                    var fmt = toPCM(ais.getFormat());
+                    try (var das = AudioSystem.getAudioInputStream(fmt, ais)) {
+                        if (line == null || !line.isOpen()) {
+                            var info = new DataLine.Info(SourceDataLine.class, fmt);
+                            line = (SourceDataLine) AudioSystem.getLine(info);
+                            line.open(fmt);
+                            engine.applyVolume(line, clip.volume * engine.musicVolume * engine.masterVolume);
+                            line.start();
+                        }
                         var buf = new byte[4096];
                         int n;
                         while ((n = das.read(buf)) != -1) {
                             if (clip.stopped) break;
                             line.write(buf, 0, n);
                         }
-                        line.drain();
+                        if (!clip.stopped) line.drain();
                     }
                 } catch (UnsupportedAudioFileException | IOException | LineUnavailableException e) {
                     System.err.println("[AudioEngine] Music error: " + e.getMessage());
                     break;
-                } finally {
-                    if (line != null) {
-                        line.close();
-                        line = null;
-                    }
                 }
             } while (clip.loop && !clip.stopped);
+            if (line != null) {
+                line.close();
+                line = null;
+            }
         }
 
         void cancel() {
             clip.stopped = true;
             interrupt();
-            if (line != null) line.close();
+            var l = line;
+            if (l != null && l.isOpen()) {
+                engine.applyFadeOut(l);
+                l.close();
+                line = null;
+            }
         }
 
         void updateVolume() {
-            if (line != null && line.isOpen()) {
-                engine.setVolume(line, clip.volume * engine.musicVolume * engine.masterVolume);
+            var l = line;
+            if (l != null && l.isOpen()) {
+                engine.applyVolume(l, clip.volume * engine.musicVolume * engine.masterVolume);
             }
         }
     }

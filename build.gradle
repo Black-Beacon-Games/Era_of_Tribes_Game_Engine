@@ -27,6 +27,7 @@ dependencies {
     implementation 'net.java.dev.jna:jna-platform:5.14.0'
     implementation 'com.googlecode.soundlibs:mp3spi:1.9.5.4'
     testImplementation 'org.junit.jupiter:junit-jupiter:5.11.3'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }
 
 tasks.named('test') {

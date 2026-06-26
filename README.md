@@ -464,22 +464,23 @@ Dann wieder `launcher.bat` starten.
 
 ### ✅ Erledigt
 
-- **Audio-Engine (Soundplayer)** – `AudioEngine.java` unterstützt `.wav` und `.mp3` via `javax.sound.sampled` + MP3SPI.
+- **Audio-Engine (Soundplayer)** – `.wav` und `.mp3` via `javax.sound.sampled` + MP3SPI.
   - `loadTrack(id, datei, loop, volume)` – Track registrieren
   - `play(id)` – SFX (einmalig, Thread-Pool) oder Musik (loop, eigener Thread)
-  - `stop(id)` / `stopAll()` – Stoppen
-  - `setVolume()`, `setMusicVolume()`, `setSFXVolume()` – Lautstärkeregelung
-  - Volume-Berechnung: `clip.volume * sfx/musicVolume * masterVolume`
+  - `stop(id)` / `stopAll()` – Stoppen aller aktiven Wiedergaben
+  - `setVolume()`, `setMusicVolume()`, `setSFXVolume()` – Lautstärkeregelung für Master/Musik/SFX
+  - Volume-Änderung wirkt **sofort** auf aktive SFX und Musik (via `CopyOnWriteArrayList<ActiveSFX>`)
+  - **Fade-out** (300ms) beim Stoppen von Musik – kein harter Cut-Off
+  - **Nahtlose Loops** – `SourceDataLine` bleibt zwischen Iterationen geöffnet
+  - **`clearTracks()`** – entlädt alle Tracks + stoppt Wiedergabe (für Szenenwechsel)
+  - `sfxPool` bleibt dauerhaft aktiv (kein `shutdownNow` mehr)
+  - **JUnit-Tests** – 14 Tests für die Audio-Engine (`AudioEngineTest.java`)
 
-### 🔄 Noch offen
+### 🔄 Noch offen / geplant
 
-- **`SoundClip`-Cache persists after scene changes** – aktuell werden alle Tracks in einer `HashMap` gehalten. Bei Szenenwechseln sollte `clearTracks()` oder ein Szenen-Lebenszyklus für Audio eingebaut werden.
-- **`ExecutorService` für SFX** – wird bei `stopAll()` via `shutdownNow()` beendet, aber nie neu gestartet. Bei wiederholtem `stopAll()` + neuem `play()` → SFX tot. `sfxPool` sollte lazily oder per `resetSfxPool()` neu erstellt werden.
-- **Kein `SourceDataLine.flush()` vor `close()`** – beim Abbrechen von Musik kann ein hörbarer Cut-Off entstehen. Ein kurzes Fade-out fehlt.
-- **Volume-Änderung während der Wiedergabe** – `setMusicVolume()` aktualisiert die Lautstärke, aber `setVolume()` und `setSFXVolume()` haben keinen Effekt auf bereits spielende SFX, da diese in separaten Threads laufen.
-- **Audio-Ordner existiert nicht** – `game/assets/audio/` muss manuell angelegt werden.
-- **Kein Streaming für große Dateien** – der gesamte Sound wird über `AudioSystem.getAudioInputStream()` gestreamt (ok), aber es gibt keinen Preload-Puffer für nahtlose Loops.
-- **Fehlende `clearTracks()`-Methode** – zum Entladen aller Tracks (z. B. beim Szenenwechsel).
-- **Testabdeckung** – keine JUnit-Tests für die Audio-Engine vorhanden.
+- **Audio-Ordner** – `game/audio/` existiert, aber Pfade sind aktuell absolute/relative Caller-Pfade. Ein einheitlicher `AudioManager`-Pfad via `gamePath` wäre sauberer.
+- **Preload-Puffer** – für ganz nahtlose Loops bei großen MP3s könnte man das Ende des Tracks vorab in einen Ringbuffer laden.
+- **Szenen-Lebenszyklus automatisch** – `clearTracks()` könnte automatisch in `Scene.onLeave()` gerufen werden, wenn Audio-Systeme pro Szene getrennt werden sollen.
+- **3D / Positional Audio** – für später, wenn Einheiten/Kamera Positionen bekommen.
 
 *Black Beacon Games*
