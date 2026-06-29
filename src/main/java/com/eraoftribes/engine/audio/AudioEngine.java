@@ -151,10 +151,11 @@ public class AudioEngine {
 
     public void stopAll() {
         if (currentMusic != null) {
-            currentMusic.cancel();
+            currentMusic.interrupt();
+            currentMusic.clip.stopped = true;
             currentMusic = null;
         }
-        for (var sfx : activeSFX) sfx.close();
+        for (var sfx : activeSFX) sfx.stopped = true;
         for (var clip : clips.values()) clip.stopped = true;
     }
 

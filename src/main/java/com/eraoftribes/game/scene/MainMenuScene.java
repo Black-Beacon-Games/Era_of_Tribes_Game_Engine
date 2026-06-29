@@ -117,7 +117,7 @@ public class MainMenuScene extends Scene {
             case 0 -> engine.getSceneManager().switchTo("game");
             case 1 -> engine.getSceneManager().switchTo("settings");
             case 2 -> engine.getSceneManager().switchTo("credits");
-            case 3 -> System.exit(0);
+            case 3 -> engine.requestShutdown();
         }
     }
 }

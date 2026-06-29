@@ -5,10 +5,13 @@
   "renderer": {
     "backend": "opengl",
     "vsync": true,
-    "targetFps": 60,
-    "resolution": { "width": 1920, "height": 1080 },
+    "targetFps": 144,
+    "resolution": {
+      "width": 1280,
+      "height": 720
+    },
     "fullscreen": false,
-    "borderless": true,
+    "borderless": false,
     "antialiasing": 4,
     "anisotropicFiltering": 8
   },
@@ -35,7 +38,7 @@
     "serverTickRate": 20
   },
   "localization": {
-    "default": "de",
+    "defaultLocale": "de",
     "fallback": "en"
   },
   "saves": {
@@ -46,11 +49,11 @@
   },
   "debug": {
     "console": false,
-    "fpsOverlay": false,
-    "profiling": false,
-    "showMemory": false,
-    "showVersion": false,
-    "showCoordinates": false,
-    "logLevel": "info"
+    "fpsOverlay": true,
+    "profiling": true,
+    "showMemory": true,
+    "showVersion": true,
+    "showCoordinates": true,
+    "logLevel": "DEBUG"
   }
 }

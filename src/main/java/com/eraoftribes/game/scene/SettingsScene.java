@@ -235,6 +235,9 @@ public class SettingsScene extends Scene {
                 r.consumeClick();
                 sets[i].toggle().run();
                 engine.getConfig().save();
+                if (activeTab == 0) {
+                    engine.getRenderer().applyConfig(engine.getConfig().renderer);
+                }
                 dirty = true;
                 return;
             }

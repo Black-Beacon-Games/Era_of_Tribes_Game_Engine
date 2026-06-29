@@ -24,21 +24,22 @@ import java.util.HashMap;
 import java.util.Map;
 import javax.imageio.ImageIO;
 import javax.swing.JFrame;
+import javax.swing.SwingUtilities;
 
 public class Renderer {
-    private final RendererConfig config;
+    private RendererConfig config;
     private JFrame frame;
     private Canvas canvas;
     private BufferStrategy buffer;
     private Graphics2D g;
-    private boolean running;
+    private volatile boolean running;
     private int width, height;
 
-    private int mouseX, mouseY;
-    private boolean mousePressed;
-    private boolean mouseClicked;
-    private int clickX, clickY;
-    private int lastKey;
+    private volatile int mouseX, mouseY;
+    private volatile boolean mousePressed;
+    private volatile boolean mouseClicked;
+    private volatile int clickX, clickY;
+    private volatile int lastKey;
 
     private final Map<Integer, BufferedImage> textures = new HashMap<>();
     private int nextTexId = 1;
@@ -53,17 +54,34 @@ public class Renderer {
         System.out.println("[Renderer] Initialized (backend=swing, vsync=" + config.vsync + ")");
     }
 
+    private String windowTitle;
+    private boolean pendingRebuild;
+
     public void createWindow(String title, int w, int h) {
+        this.windowTitle = title;
         this.width = w;
         this.height = h;
-        frame = new JFrame(title);
+        doBuildWindow();
+        running = true;
+        System.out.println("[Renderer] Window created: " + title + " (" + w + "x" + h + ")");
+    }
+
+    private void doBuildWindow() {
+        if (frame != null) {
+            frame.dispose();
+            frame = null;
+        }
+
+        boolean undecorated = config.borderless || config.fullscreen;
+        frame = new JFrame(windowTitle);
         frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
-        frame.setSize(w, h);
+        frame.setUndecorated(undecorated);
+        frame.setSize(width, height);
         frame.setResizable(false);
         frame.setLocationRelativeTo(null);
 
         canvas = new Canvas();
-        canvas.setSize(w, h);
+        canvas.setSize(width, height);
         canvas.setBackground(Color.BLACK);
         frame.add(canvas);
 
@@ -99,12 +117,33 @@ public class Renderer {
 
         canvas.createBufferStrategy(2);
         buffer = canvas.getBufferStrategy();
+    }
 
-        running = true;
-        System.out.println("[Renderer] Window created: " + title + " (" + w + "x" + h + ")");
+    public void applyConfig(RendererConfig cfg) {
+        if (cfg.borderless != config.borderless || cfg.fullscreen != config.fullscreen) {
+            config = cfg;
+            width = cfg.resolution.width;
+            height = cfg.resolution.height;
+            pendingRebuild = true;
+            System.out.println("[Renderer] Window rebuild pending (borderless=" + cfg.borderless + ", fullscreen=" + cfg.fullscreen + ")");
+        } else {
+            config = cfg;
+            if (cfg.resolution.width != width || cfg.resolution.height != height) {
+                width = cfg.resolution.width;
+                height = cfg.resolution.height;
+                frame.setSize(width, height);
+                canvas.setSize(width, height);
+                frame.setLocationRelativeTo(null);
+                System.out.println("[Renderer] Resolution changed to " + width + "x" + height);
+            }
+        }
     }
 
     public void beginFrame() {
+        if (pendingRebuild) {
+            pendingRebuild = false;
+            doBuildWindow();
+        }
         if (buffer == null) return;
         g = (Graphics2D) buffer.getDrawGraphics();
         g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
@@ -120,9 +159,17 @@ public class Renderer {
 
     public boolean shouldClose() { return !running; }
 
+    public void requestClose() { running = false; }
+
     public void destroy() {
         running = false;
-        if (frame != null) frame.dispose();
+        if (frame != null) {
+            try {
+                SwingUtilities.invokeAndWait(frame::dispose);
+            } catch (Exception e) {
+                frame.dispose();
+            }
+        }
         System.out.println("[Renderer] Shutdown.");
     }
 

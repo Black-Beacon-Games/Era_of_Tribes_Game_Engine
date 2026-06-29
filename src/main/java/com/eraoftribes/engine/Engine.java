@@ -40,6 +40,7 @@ public class Engine {
 
     private DebugConsole debugConsole;
     private boolean lastConsoleState;
+    private boolean shutdownDone;
 
     private long lastFpsTime;
     private int frameCount;
@@ -100,7 +101,9 @@ public class Engine {
     public void start(Game game) {
         this.game = game;
         renderer.createWindow("Era of Tribes", config.renderer.resolution.width, config.renderer.resolution.height);
-        new Thread(() -> { try { discord.init(); } catch (Exception e) { System.err.println("[Discord] Init error: " + e.getMessage()); } }, "discord-init").start();
+        Thread di = new Thread(() -> { try { discord.init(); } catch (Exception e) { System.err.println("[Discord] Init error: " + e.getMessage()); } }, "discord-init");
+        di.setDaemon(true);
+        di.start();
         try {
             sceneManager.switchTo("loading");
         } catch (Exception e) {
@@ -237,6 +240,8 @@ public class Engine {
     }
 
     private void shutdown() {
+        if (shutdownDone) return;
+        shutdownDone = true;
         config.save();
         saveManager.saveAll();
         network.disconnect();
@@ -244,6 +249,17 @@ public class Engine {
         discord.shutdown();
         renderer.destroy();
         System.out.println("[Engine] Shutdown complete.");
+    }
+
+    public void requestShutdown() {
+        Thread t = new Thread(() -> {
+            try { shutdown(); }
+            catch (Exception e) { System.err.println("[Engine] Shutdown error: " + e.getMessage()); e.printStackTrace(); }
+        }, "shutdown-worker");
+        t.setDaemon(true);
+        t.start();
+        try { t.join(2000); } catch (InterruptedException e) { }
+        Runtime.getRuntime().halt(0);
     }
 
     private void parseArgs() {

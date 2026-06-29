@@ -52,7 +52,7 @@ public class EngineConfig {
     public static class RendererConfig {
         public String backend = "swing";
         public boolean vsync = true;
-        public int targetFps = 60;
+        public int targetFps = 144;
         public ResolutionConfig resolution = new ResolutionConfig();
         public boolean fullscreen;
         public boolean borderless = true;
